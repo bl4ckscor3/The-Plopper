@@ -1,1 +1,1 @@
-ThePlopper 1.12.x
+Download link: https://minecraft.curseforge.com/projects/the-plopper
