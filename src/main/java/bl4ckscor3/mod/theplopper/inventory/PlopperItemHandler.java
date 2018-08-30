@@ -41,7 +41,7 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 
 			return ItemStack.EMPTY;
 		}
-		else if(slotStack.getItem() == stackToInsert.getItem() && slotStack.getCount() < limit)
+		else if(areItemStacksEqual(slotStack, stackToInsert) && slotStack.getCount() < limit)
 		{
 			if(limit - slotStack.getCount() >= stackToInsert.getCount())
 			{
@@ -108,5 +108,18 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 	public TileEntityPlopper getTileEntity()
 	{
 		return tileEntity;
+	}
+
+	/**
+	 * See {@link ItemStack#areItemStacksEqual(ItemStack, ItemStack)} but without size restriction
+	 */
+	public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2)
+	{
+		ItemStack s1 = stack1.copy();
+		ItemStack s2 = stack2.copy();
+
+		s1.setCount(1);
+		s2.setCount(1);
+		return ItemStack.areItemStacksEqual(s1, s2);
 	}
 }

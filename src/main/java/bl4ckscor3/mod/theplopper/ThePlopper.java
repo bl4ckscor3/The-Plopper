@@ -35,10 +35,9 @@ public class ThePlopper
 {
 	public static final String MOD_ID = "theplopper";
 	public static final String NAME = "The Plopper";
-	public static final String VERSION = "v1.0";
+	public static final String VERSION = "v1.1";
 	public static final String MC_VERSION = "1.12";
 	public static Block thePlopper;
-	public static final GuiHandler guiHandler = new GuiHandler();
 	@Instance(MOD_ID)
 	public ThePlopper instance;
 
@@ -54,7 +53,7 @@ public class ThePlopper
 		meta.name = NAME;
 		meta.version = VERSION;
 
-		NetworkRegistry.INSTANCE.registerGuiHandler(instance, guiHandler);
+		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 	}
 
 	@SubscribeEvent
@@ -103,4 +102,29 @@ public class ThePlopper
 		if(event.getModID().equals(MOD_ID))
 			ConfigManager.sync(MOD_ID, Type.INSTANCE);
 	}
+
+	/**
+	 * For Testing purposes
+	 */
+	//TODO: Comment out on release
+	//	@SubscribeEvent
+	//	public static void onItemToss(ItemTossEvent event)
+	//	{
+	//		if(event.getEntityItem().getEntityWorld().isRemote)
+	//			return;
+	//
+	//		EntityItem ei = event.getEntityItem();
+	//		Iterable<BlockPos> box = BlockPos.getAllInBox(ei.getPosition().down(Configuration.range).west(Configuration.range).north(Configuration.range), ei.getPosition().up(Configuration.range).east(Configuration.range).south(Configuration.range));
+	//
+	//		for(BlockPos pos : box)
+	//		{
+	//			TileEntity te = ei.getEntityWorld().getTileEntity(pos);
+	//
+	//			if(te != null && te instanceof TileEntityPlopper)
+	//			{
+	//				if(((TileEntityPlopper)te).suckUp(ei, ei.getItem())) //if there are multiple ploppers, only one plopper should get the item, but if one plopper has no more space, another can take over
+	//					return;
+	//			}
+	//		}
+	//	}
 }
