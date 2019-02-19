@@ -17,20 +17,20 @@ public class ContainerPlopper extends Container
 		{
 			for(int j = 0; j < 9; j++)
 			{
-				addSlotToContainer(new Slot(playerInv, 9 + j + i * 9, 8 + j * 18, 51 + i * 18));
+				addSlot(new Slot(playerInv, 9 + j + i * 9, 8 + j * 18, 51 + i * 18));
 			}
 		}
 
 		//player hotbar
 		for(int i = 0; i < 9; i++)
 		{
-			addSlotToContainer(new Slot(playerInv, i, 8 + i * 18, 109));
+			addSlot(new Slot(playerInv, i, 8 + i * 18, 109));
 		}
 
 		//plopper inventory
 		for(int i = 0; i < 7; i++)
 		{
-			addSlotToContainer(new OutputSlot(tep.getInventory(), i, 26 + i * 18, 20));
+			addSlot(new OutputSlot(tep.getInventory(), i, 26 + i * 18, 20));
 		}
 	}
 

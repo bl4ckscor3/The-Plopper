@@ -1,27 +1,30 @@
 package bl4ckscor3.mod.theplopper.gui;
 
-import bl4ckscor3.mod.theplopper.container.ContainerPlopper;
+import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.FMLPlayMessages.OpenContainer;
 
-public class GuiHandler implements IGuiHandler
+public class GuiHandler
 {
-	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
-	{
-		if(world.getTileEntity(new BlockPos(x, y, z)) instanceof TileEntityPlopper)
-			return new ContainerPlopper(player.inventory, (TileEntityPlopper)world.getTileEntity(new BlockPos(x, y, z)));
-		return null;
-	}
+	public static final ResourceLocation PLOPPER_GUI_ID = new ResourceLocation(ThePlopper.MOD_ID, "plopper");
 
-	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public static GuiScreen getClientGuiElement(OpenContainer message)
 	{
-		if(world.getTileEntity(new BlockPos(x, y, z)) instanceof TileEntityPlopper)
-			return new GuiPlopper(player.inventory, (TileEntityPlopper)world.getTileEntity(new BlockPos(x, y, z)));
+		EntityPlayerSP player = Minecraft.getInstance().player;
+
+		if(message.getId().equals(PLOPPER_GUI_ID))
+		{
+			TileEntity te = Minecraft.getInstance().world.getTileEntity(message.getAdditionalData().readBlockPos());
+
+			if(te instanceof TileEntityPlopper)
+				return new GuiPlopper(player.inventory, (TileEntityPlopper)te);
+		}
+
 		return null;
 	}
 }

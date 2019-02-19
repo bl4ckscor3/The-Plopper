@@ -1,5 +1,6 @@
 package bl4ckscor3.mod.theplopper.gui;
 
+import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.container.ContainerPlopper;
 import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -22,7 +23,7 @@ public class GuiPlopper extends GuiContainer
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-		String name = I18n.format("tile.theplopper:plopper.name");
+		String name = I18n.format(ThePlopper.thePlopper.getTranslationKey());
 
 		fontRenderer.drawString(name, xSize / 2 - fontRenderer.getStringWidth(name) / 2, 7, 0x404040);
 	}
@@ -31,7 +32,7 @@ public class GuiPlopper extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
 		drawDefaultBackground();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(GUI_TEXTURE);
 		drawTexturedModalRect((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
 	}

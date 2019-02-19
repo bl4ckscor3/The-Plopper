@@ -3,26 +3,33 @@ package bl4ckscor3.mod.theplopper.block;
 import java.util.List;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
+import bl4ckscor3.mod.theplopper.gui.GuiHandler;
+import bl4ckscor3.mod.theplopper.gui.PlopperInteractionObject;
 import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BlockPlopper extends BlockContainer
 {
@@ -30,59 +37,39 @@ public class BlockPlopper extends BlockContainer
 
 	public BlockPlopper()
 	{
-		super(Material.IRON, MapColor.STONE);
+		super(Block.Properties.create(Material.IRON, MaterialColor.STONE).hardnessAndResistance(3.0F, 8.0F).sound(SoundType.METAL));
 
 		setRegistryName(ThePlopper.MOD_ID + ":" + NAME);
-		setTranslationKey(ThePlopper.MOD_ID + ":" + NAME);
-		setHardness(3.0F);
-		setResistance(8.0F);
-		setSoundType(SoundType.METAL);
-		setCreativeTab(CreativeTabs.REDSTONE);
 	}
 
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+	public VoxelShape getShape(IBlockState state, IBlockReader source, BlockPos pos)
 	{
-		float px = 1.0F / 16.0F;
+		VoxelShape base = Block.makeCuboidShape(2, 0, 2, 14, 1, 14);
+		VoxelShape hopper1 = Block.makeCuboidShape(7, 1, 7, 9, 2, 9);
+		VoxelShape hopper2 = Block.makeCuboidShape(6, 2, 6, 10, 3, 10);
+		VoxelShape hopper3 = Block.makeCuboidShape(5, 3, 5, 11, 4, 11);
+		VoxelShape hopper4 = Block.makeCuboidShape(4, 4, 4, 12, 5, 12);
 
-		return new AxisAlignedBB(px * 2.0F, 0, px * 2.0F, px * 14.0F, 5 * px, px * 14.0F);
+		return VoxelShapes.or(VoxelShapes.or(VoxelShapes.or(VoxelShapes.or(base, hopper1), hopper2), hopper3), hopper4); //mojang, why no varargs? :c
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(!worldIn.isRemote)
-			playerIn.openGui(ThePlopper.MOD_ID, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+		if(!world.isRemote)
+			NetworkHooks.openGui((EntityPlayerMP)player, new PlopperInteractionObject(GuiHandler.PLOPPER_GUI_ID, world, pos), data -> data.writeBlockPos(pos));
 		return true;
-	}
-	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
-	{
-		TileEntity te = worldIn.getTileEntity(pos);
-
-		if(te instanceof TileEntityPlopper)
-		{
-			for(ItemStack stack : ((TileEntityPlopper)te).getInventory().getContents())
-			{
-				Block.spawnAsEntity(worldIn, pos, stack);
-			}
-		}
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn)
+	public void addInformation(ItemStack stack, IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
-		tooltip.add(I18n.translateToLocal("theplopper:plopper.tooltip"));
+		tooltip.add(new TextComponentString(TextFormatting.GRAY + new TextComponentTranslation("theplopper:plopper.tooltip").getFormattedText()));
 	}
 
 	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos)
+	public boolean isNormalCube(IBlockState state, IBlockReader world, BlockPos pos)
 	{
 		return false;
 	}
@@ -100,7 +87,7 @@ public class BlockPlopper extends BlockContainer
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta)
+	public TileEntity createNewTileEntity(IBlockReader world)
 	{
 		return new TileEntityPlopper();
 	}

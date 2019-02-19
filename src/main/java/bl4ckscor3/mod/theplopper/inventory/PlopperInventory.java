@@ -7,7 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public class PlopperInventory implements IInventory
 {
@@ -25,9 +25,9 @@ public class PlopperInventory implements IInventory
 	}
 
 	@Override
-	public String getName()
+	public ITextComponent getName()
 	{
-		return ThePlopper.thePlopper.getTranslationKey();
+		return new TextComponentTranslation(ThePlopper.thePlopper.getTranslationKey());
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class PlopperInventory implements IInventory
 	@Override
 	public ITextComponent getDisplayName()
 	{
-		return new TextComponentString(ThePlopper.thePlopper.getTranslationKey());
+		return getName();
 	}
 
 	@Override
@@ -150,5 +150,11 @@ public class PlopperInventory implements IInventory
 	public NonNullList<ItemStack> getContents()
 	{
 		return contents;
+	}
+
+	@Override
+	public ITextComponent getCustomName()
+	{
+		return getName();
 	}
 }

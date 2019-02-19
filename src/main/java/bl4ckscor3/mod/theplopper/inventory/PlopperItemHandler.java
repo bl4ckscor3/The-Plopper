@@ -53,7 +53,7 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 			else
 			{
 				ItemStack toInsert = stackToInsert.copy();
-				ItemStack toReturn = toInsert.splitStack((slotStack.getCount() + stackToInsert.getCount()) - limit); //this is the remaining stack that could not be inserted
+				ItemStack toReturn = toInsert.split((slotStack.getCount() + stackToInsert.getCount()) - limit); //this is the remaining stack that could not be inserted
 
 				if(!simulate)
 					slotStack.setCount(slotStack.getCount() + toInsert.getCount());
@@ -84,7 +84,7 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 			if(!simulate)
 				stack.shrink(amount);
 
-			return stack.copy().splitStack(amount);
+			return stack.copy().split(amount);
 		}
 	}
 

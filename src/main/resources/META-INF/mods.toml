@@ -1,0 +1,25 @@
+modLoader="javafml" #mandatory
+loaderVersion="[25,)" #mandatory
+
+[[mods]] #mandatory
+	modId="theplopper" #mandatory
+	version="v1.1" #mandatory
+	displayName="The Plopper" #mandatory
+	description='''A block that picks up items that are about to despawn.''' #mandatory
+	issueTrackerURL="https://github.com/bl4ckscor3/The-Plopper/issues"
+	displayURL="http://minecraft.curseforge.com/projects/the-plopper"
+	authors="bl4ckscor3"
+
+[[dependencies.theplopper]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.theplopper]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.13.2]"
+    ordering="NONE"
+    side="BOTH"
