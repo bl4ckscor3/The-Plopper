@@ -37,7 +37,7 @@ public class ThePlopper
 {
 	public static final String MOD_ID = "theplopper";
 	public static final String NAME = "The Plopper";
-	public static final String VERSION = "v1.1.1";
+	public static final String VERSION = "v1.2";
 	public static final String MC_VERSION = "1.12";
 	public static Block thePlopper;
 	public static Item rangeUpgrade;
