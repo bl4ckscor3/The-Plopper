@@ -1,5 +1,5 @@
 # v1.2
-- Add range upgrade
+- Added range upgrade
 - Removed range config option
 - Fix tooltips not showing up in The Plopper's GUI
 
