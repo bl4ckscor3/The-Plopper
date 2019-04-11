@@ -1,6 +1,7 @@
 # v1.2
 - Add range upgrade
 - Removed range config option
+- Fix tooltips not showing up in The Plopper's GUI
 
 # v1.1.1
 - Prevent crash with VanillaFix
