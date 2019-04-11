@@ -11,11 +11,14 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ExtensionPoint;
@@ -31,6 +34,7 @@ public class ThePlopper
 {
 	public static final String MOD_ID = "theplopper";
 	public static Block thePlopper;
+	public static Item rangeUpgrade;
 	public static TileEntityType<TileEntityPlopper> teTypePlopper;
 
 	public ThePlopper()
@@ -39,7 +43,7 @@ public class ThePlopper
 		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GuiHandler::getClientGuiElement);
 		MinecraftForge.EVENT_BUS.addListener(this::onItemExpire);
 		MinecraftForge.EVENT_BUS.addListener(this::onBlockBreak);
-		//		MinecraftForge.EVENT_BUS.addListener(this::onItemToss);
+		MinecraftForge.EVENT_BUS.addListener(this::onItemToss);
 	}
 
 	@SubscribeEvent
@@ -57,26 +61,45 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void onRegistryEventRegisterItem(RegistryEvent.Register<Item> event)
 	{
+		event.getRegistry().register(rangeUpgrade = new Item(new Item.Properties().group(ItemGroup.REDSTONE).maxStackSize(7)).setRegistryName(new ResourceLocation(MOD_ID, "range_upgrade")));
 		event.getRegistry().register(new ItemBlock(thePlopper, new Item.Properties().group(ItemGroup.REDSTONE)).setRegistryName(thePlopper.getRegistryName().toString()));
 	}
 
 	public void onItemExpire(ItemExpireEvent event)
 	{
-		if(event.getEntityItem().getEntityWorld().isRemote)
+		checkForPloppers(event.getEntityItem());
+	}
+
+	/**
+	 * Checks for any ploppers in increasing ranges and makes them suck up the item if applicable
+	 * @param ei The item to potentially suck up
+	 */
+	private static void checkForPloppers(EntityItem ei)
+	{
+		if(ei.getEntityWorld().isRemote)
 			return;
 
-		EntityItem ei = event.getEntityItem();
-		int range = Configuration.CONFIG.range.get();
-		Iterable<BlockPos> box = BlockPos.getAllInBox(ei.getPosition().down().west(range).north(range), ei.getPosition().up(range).east(range).south(range));
+		Vec3d eiPos = new Vec3d(ei.getPosition().getX(), ei.getPosition().getY(), ei.getPosition().getZ());
+		int maxRange = 16; //16 is a good range in my opinion. not too large, but can still cover a big enough area
+		Iterable<BlockPos> box = BlockPos.getAllInBox(ei.getPosition().down(maxRange).west(maxRange).north(maxRange), ei.getPosition().up(maxRange).east(maxRange).south(maxRange));
 
+		//find ploppers that are within the maximum range of the item
 		for(BlockPos pos : box)
 		{
 			TileEntity te = ei.getEntityWorld().getTileEntity(pos);
 
+			//check if a found plopper can pick up the item
 			if(te != null && te instanceof TileEntityPlopper)
 			{
-				if(((TileEntityPlopper)te).suckUp(ei, ei.getItem())) //if there are multiple ploppers, only one plopper should get the item, but if one plopper has no more space, another can take over
-					return;
+				TileEntityPlopper plopper = (TileEntityPlopper)te;
+				int distanceToItem = (int)Math.floor(new Vec3d(plopper.getPos().getX(), plopper.getPos().getY(), plopper.getPos().getZ()).distanceTo(eiPos));
+
+				if(plopper.getRange() >= distanceToItem)
+				{
+					//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
+					if(plopper.suckUp(ei, ei.getItem()))
+						return;
+				}
 			}
 		}
 	}
@@ -98,24 +121,8 @@ public class ThePlopper
 	 * For Testing purposes
 	 */
 	//TODO: Comment out on release
-	//	public void onItemToss(ItemTossEvent event)
-	//	{
-	//		if(event.getEntityItem().getEntityWorld().isRemote)
-	//			return;
-	//
-	//		EntityItem ei = event.getEntityItem();
-	//		int range = Configuration.CONFIG.range.get();
-	//		Iterable<BlockPos> box = BlockPos.getAllInBox(ei.getPosition().down(range).west(range).north(range), ei.getPosition().up(range).east(range).south(range));
-	//
-	//		for(BlockPos pos : box)
-	//		{
-	//			TileEntity te = ei.getEntityWorld().getTileEntity(pos);
-	//
-	//			if(te != null && te instanceof TileEntityPlopper)
-	//			{
-	//				if(((TileEntityPlopper)te).suckUp(ei, ei.getItem())) //if there are multiple ploppers, only one plopper should get the item, but if one plopper has no more space, another can take over
-	//					return;
-	//			}
-	//		}
-	//	}
+	public void onItemToss(ItemTossEvent event)
+	{
+		checkForPloppers(event.getEntityItem());
+	}
 }

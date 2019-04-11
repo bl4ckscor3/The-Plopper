@@ -1,6 +1,7 @@
 package bl4ckscor3.mod.theplopper.container;
 
-import bl4ckscor3.mod.theplopper.inventory.OutputSlot;
+import bl4ckscor3.mod.theplopper.ThePlopper;
+import bl4ckscor3.mod.theplopper.inventory.ItemValidatorSlot;
 import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -30,8 +31,11 @@ public class ContainerPlopper extends Container
 		//plopper inventory
 		for(int i = 0; i < 7; i++)
 		{
-			addSlot(new OutputSlot(tep.getInventory(), i, 26 + i * 18, 20));
+			addSlot(new ItemValidatorSlot(tep.getInventory(), i, 26 + i * 18, 20, stack -> false));
 		}
+
+		//upgrade slot
+		addSlot(new ItemValidatorSlot(tep.getInventory(), 7, 177, 7, stack -> stack.getItem() == ThePlopper.rangeUpgrade));
 	}
 
 	@Override
@@ -46,17 +50,23 @@ public class ContainerPlopper extends Container
 
 			copy = slotStack.copy();
 
-			if(index >= 36 && index <= 42)
+			if(index < 43) //any slot
+			{
+				if(!mergeItemStack(slotStack, 43, 44, false)) //try to merge into the upgrade slot first
+					return ItemStack.EMPTY;
+			}
+
+			if(index >= 36 && index <= 43) //plopper slots
 			{
 				if(!mergeItemStack(slotStack, 0, 36, false))
 					return ItemStack.EMPTY;
 			}
-			else if(index >= 27 && index <= 35)
+			else if(index >= 27 && index <= 35) //hotbar
 			{
 				if(!mergeItemStack(slotStack, 0, 27, false))
 					return ItemStack.EMPTY;
 			}
-			else if(index <= 26)
+			else if(index <= 26) //main inventory
 			{
 				if(!mergeItemStack(slotStack, 27, 36, false))
 					return ItemStack.EMPTY;
@@ -72,7 +82,7 @@ public class ContainerPlopper extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer playerIn)
+	public boolean canInteractWith(EntityPlayer player)
 	{
 		return true;
 	}

@@ -68,9 +68,17 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate)
 	{
+		return extractItem(slot, amount, simulate, false);
+	}
+
+	/**
+	 * Adds a parameter to the already existing extractItem method for selecting whether to ignore the upgrade slot or not
+	 */
+	public ItemStack extractItem(int slot, int amount, boolean simulate, boolean ignoreUpgradeSlot)
+	{
 		ItemStack stack = getStackInSlot(slot);
 
-		if(stack.isEmpty() || slot < 0 || slot >= getSlots() || amount < 1)
+		if(stack.isEmpty() || slot < 0 || slot >= getSlots() || amount < 1 || (slot == 7 && !ignoreUpgradeSlot))
 			return ItemStack.EMPTY;
 		else if(amount >= stack.getCount())
 		{
@@ -93,7 +101,7 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 	{
 		ItemStack stack = getStackInSlot(slot);
 
-		return stack.isEmpty() ? 64 : stack.getItem().getItemStackLimit(stack);
+		return stack.isEmpty() ? (slot == 7 ? 7 : 64) : stack.getItem().getItemStackLimit(stack);
 	}
 
 	@Override
@@ -121,5 +129,11 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 		s1.setCount(1);
 		s2.setCount(1);
 		return ItemStack.areItemStacksEqual(s1, s2);
+	}
+
+	@Override
+	public boolean isItemValid(int slot, ItemStack stack)
+	{
+		return true;
 	}
 }

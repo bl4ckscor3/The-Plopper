@@ -1,4 +1,5 @@
 {
     "block.theplopper.plopper": "Le ploppeur",
+    "item.theplopper.range_upgrade": "Amélioration de portée",
     "theplopper:plopper.tooltip": "Ramasse les objets au sol proches qui s'apprêtent à disparaître."
 }

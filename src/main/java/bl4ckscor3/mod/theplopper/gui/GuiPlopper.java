@@ -16,6 +16,9 @@ public class GuiPlopper extends GuiContainer
 	public GuiPlopper(InventoryPlayer playerInv, TileEntityPlopper te)
 	{
 		super(new ContainerPlopper(playerInv, te));
+
+		xSize = 200;
+		ySize = 133;
 	}
 
 	@Override
@@ -25,7 +28,15 @@ public class GuiPlopper extends GuiContainer
 
 		String name = I18n.format(ThePlopper.thePlopper.getTranslationKey());
 
-		fontRenderer.drawString(name, xSize / 2 - fontRenderer.getStringWidth(name) / 2, 7, 0x404040);
+		fontRenderer.drawString(name, (xSize - 24) / 2 - fontRenderer.getStringWidth(name) / 2, 7, 0x404040);
+	}
+
+	@Override
+	public void render(int mouseX, int mouseY, float partialTicks)
+	{
+		super.render(mouseX, mouseY, partialTicks);
+
+		renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	@Override

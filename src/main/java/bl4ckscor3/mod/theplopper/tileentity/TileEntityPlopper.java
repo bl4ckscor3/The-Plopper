@@ -38,7 +38,7 @@ public class TileEntityPlopper extends TileEntity
 	{
 		ItemStack remainder = stack;
 
-		for(int i = 0; i < inventory.getContents().size(); i++)
+		for(int i = 0; i < inventory.getContents().size() - 1; i++) //-1 so the last slot is not checked (the upgrade slot)
 		{
 			remainder = inventory.getItemHandler().insertItem(i, remainder, false);
 
@@ -80,7 +80,7 @@ public class TileEntityPlopper extends TileEntity
 
 		for(int i = 0; i < inventory.getContents().size(); i++)
 		{
-			if(invTag.contains("Slot" + i))
+			if(invTag != null && invTag.contains("Slot" + i))
 				inventory.setInventorySlotContents(i, ItemStack.read((NBTTagCompound)invTag.get("Slot" + i)));
 		}
 
@@ -115,5 +115,14 @@ public class TileEntityPlopper extends TileEntity
 	public PlopperInventory getInventory()
 	{
 		return inventory;
+	}
+
+	/**
+	 * @return The range this plopper will pick up items. Minimum 2, maximum 16 (with 7 upgrades installed)
+	 */
+	public int getRange()
+	{
+		//slot 7 is the upgrade slot
+		return 2 + inventory.getStackInSlot(7).getCount() * 2;
 	}
 }

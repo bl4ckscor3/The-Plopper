@@ -1,4 +1,5 @@
 {
     "block.theplopper.plopper": "Der Plopper",
+    "item.theplopper.range_upgrade": "Reichweiten-Upgrade",
     "theplopper:plopper.tooltip": "Sammelt in seiner Umgebung auf dem Boden liegende Items, die kurz vorm Despawnen sind, auf."
 }
