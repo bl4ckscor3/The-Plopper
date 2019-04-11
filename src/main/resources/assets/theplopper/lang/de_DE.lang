@@ -1,2 +1,3 @@
 tile.theplopper:plopper.name=Der Plopper
+item.theplopper:range_upgrade.name=Reichweiten-Upgrade
 theplopper:plopper.tooltip=Sammelt in seiner Umgebung auf dem Boden liegende Items, die kurz vorm Despawnen sind, auf.

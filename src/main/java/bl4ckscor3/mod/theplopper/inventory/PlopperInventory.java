@@ -11,7 +11,7 @@ import net.minecraft.util.text.TextComponentString;
 
 public class PlopperInventory implements IInventory
 {
-	public static final int SLOTS = 7;
+	public static final int SLOTS = 8;
 	private NonNullList<ItemStack> contents = NonNullList.<ItemStack>withSize(SLOTS, ItemStack.EMPTY);
 	private PlopperItemHandler itemHandler;
 
@@ -63,7 +63,9 @@ public class PlopperInventory implements IInventory
 	@Override
 	public ItemStack decrStackSize(int index, int count)
 	{
-		return itemHandler.extractItem(index, count, false);
+		if(index == 7) //upgrade slot
+			return itemHandler.extractItem(index, count, false, true);
+		else return itemHandler.extractItem(index, count, false);
 	}
 
 	@Override

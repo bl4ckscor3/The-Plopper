@@ -1,6 +1,7 @@
 package bl4ckscor3.mod.theplopper.container;
 
-import bl4ckscor3.mod.theplopper.inventory.OutputSlot;
+import bl4ckscor3.mod.theplopper.ThePlopper;
+import bl4ckscor3.mod.theplopper.inventory.ItemValidatorSlot;
 import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -30,8 +31,11 @@ public class ContainerPlopper extends Container
 		//plopper inventory
 		for(int i = 0; i < 7; i++)
 		{
-			addSlotToContainer(new OutputSlot(tep.getInventory(), i, 26 + i * 18, 20));
+			addSlotToContainer(new ItemValidatorSlot(tep.getInventory(), i, 26 + i * 18, 20, stack -> false));
 		}
+
+		//upgrade slot
+		addSlotToContainer(new ItemValidatorSlot(tep.getInventory(), 7, 177, 7, stack -> stack.getItem() == ThePlopper.rangeUpgrade));
 	}
 
 	@Override
@@ -72,7 +76,7 @@ public class ContainerPlopper extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer playerIn)
+	public boolean canInteractWith(EntityPlayer player)
 	{
 		return true;
 	}

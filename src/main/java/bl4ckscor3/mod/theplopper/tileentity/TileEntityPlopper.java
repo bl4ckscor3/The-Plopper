@@ -114,4 +114,13 @@ public class TileEntityPlopper extends TileEntity
 	{
 		return inventory;
 	}
+
+	/**
+	 * @return The range this plopper will pick up items. Minimum 2, maximum 16 (with 7 upgrades installed)
+	 */
+	public int getRange()
+	{
+		//slot 7 is the upgrade slot
+		return 2 + inventory.getStackInSlot(7).getCount() * 2;
+	}
 }
