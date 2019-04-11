@@ -70,7 +70,7 @@ public class TileEntityPlopper extends TileEntity
 
 		for(int i = 0; i < inventory.getContents().size(); i++)
 		{
-			if(invTag.hasKey("Slot" + i))
+			if(invTag != null && invTag.hasKey("Slot" + i))
 				inventory.setInventorySlotContents(i, new ItemStack((NBTTagCompound)invTag.getTag("Slot" + i)));
 		}
 
