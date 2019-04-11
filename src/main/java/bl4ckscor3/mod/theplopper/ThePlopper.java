@@ -7,6 +7,7 @@ import bl4ckscor3.mod.theplopper.gui.GuiHandler;
 import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -69,7 +70,7 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void onRegistryEventRegisterItem(RegistryEvent.Register<Item> event)
 	{
-		event.getRegistry().register(rangeUpgrade = new Item().setRegistryName(new ResourceLocation(MOD_ID, "range_upgrade")).setTranslationKey("theplopper:range_upgrade").setMaxStackSize(7));
+		event.getRegistry().register(rangeUpgrade = new Item().setRegistryName(new ResourceLocation(MOD_ID, "range_upgrade")).setTranslationKey("theplopper:range_upgrade").setMaxStackSize(7).setCreativeTab(CreativeTabs.REDSTONE));
 		event.getRegistry().register(new ItemBlock(thePlopper).setRegistryName(thePlopper.getRegistryName().toString()));
 	}
 
