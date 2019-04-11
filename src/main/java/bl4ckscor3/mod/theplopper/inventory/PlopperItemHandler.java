@@ -28,7 +28,7 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stackToInsert, boolean simulate)
 	{
-		if(stackToInsert.isEmpty() || slot < 0 || slot >= getSlots())
+		if(stackToInsert.isEmpty() || slot < 0 || slot >= getSlots() || slot == 7)
 			return stackToInsert;
 
 		ItemStack slotStack = getStackInSlot(slot);

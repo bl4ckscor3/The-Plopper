@@ -50,17 +50,23 @@ public class ContainerPlopper extends Container
 
 			copy = slotStack.copy();
 
-			if(index >= 36 && index <= 42)
+			if(index < 43) //any slot
+			{
+				if(!mergeItemStack(slotStack, 43, 44, false)) //try to merge into the upgrade slot first
+					return ItemStack.EMPTY;
+			}
+
+			if(index >= 36 && index <= 43) //plopper slots
 			{
 				if(!mergeItemStack(slotStack, 0, 36, false))
 					return ItemStack.EMPTY;
 			}
-			else if(index >= 27 && index <= 35)
+			else if(index >= 27 && index <= 35) //hotbar
 			{
 				if(!mergeItemStack(slotStack, 0, 27, false))
 					return ItemStack.EMPTY;
 			}
-			else if(index <= 26)
+			else if(index <= 26) //main inventory
 			{
 				if(!mergeItemStack(slotStack, 27, 36, false))
 					return ItemStack.EMPTY;
