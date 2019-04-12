@@ -50,9 +50,9 @@ public class ContainerPlopper extends Container
 
 			copy = slotStack.copy();
 
-			if(index < 43) //any slot
+			if(index != 43 && getInventory().get(index).getItem() == ThePlopper.rangeUpgrade) //try to merge upgrades first
 			{
-				if(!mergeItemStack(slotStack, 43, 44, false)) //try to merge into the upgrade slot first
+				if(!mergeItemStack(slotStack, 43, 44, false))
 					return ItemStack.EMPTY;
 			}
 
