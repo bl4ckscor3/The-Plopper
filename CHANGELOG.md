@@ -1,6 +1,6 @@
 # v1.2
 - Added range upgrade
-- Added French translation
+- Added French translation (Thanks Lykrast!)
 - Fix tooltips not showing up in The Plopper's GUI
 - Fix ItemStacks not getting synchronized correctly when the GUI is open
 - Removed range config option
