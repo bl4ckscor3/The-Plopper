@@ -11,10 +11,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.config.Config.Type;
@@ -38,7 +35,7 @@ public class ThePlopper
 {
 	public static final String MOD_ID = "theplopper";
 	public static final String NAME = "The Plopper";
-	public static final String VERSION = "v1.2";
+	public static final String VERSION = "v1.2.1";
 	public static final String MC_VERSION = "1.12";
 	public static Block thePlopper;
 	public static Item rangeUpgrade;
@@ -96,28 +93,11 @@ public class ThePlopper
 		if(ei.getEntityWorld().isRemote)
 			return;
 
-		Vec3d eiPos = new Vec3d(ei.getPosition().getX(), ei.getPosition().getY(), ei.getPosition().getZ());
-		int maxRange = 16; //16 is a good range in my opinion. not too large, but can still cover a big enough area
-		Iterable<BlockPos> box = BlockPos.getAllInBox(ei.getPosition().down(maxRange).west(maxRange).north(maxRange), ei.getPosition().up(maxRange).east(maxRange).south(maxRange));
-
-		//find ploppers that are within the maximum range of the item
-		for(BlockPos pos : box)
+		for(TileEntityPlopper plopper : PlopperTracker.getPloppersInRange(ei.getEntityWorld(), ei.getPosition()))
 		{
-			TileEntity te = ei.getEntityWorld().getTileEntity(pos);
-
-			//check if a found plopper can pick up the item
-			if(te != null && te instanceof TileEntityPlopper)
-			{
-				TileEntityPlopper plopper = (TileEntityPlopper)te;
-				int distanceToItem = (int)Math.floor(new Vec3d(plopper.getPos().getX(), plopper.getPos().getY(), plopper.getPos().getZ()).distanceTo(eiPos));
-
-				if(plopper.getRange() >= distanceToItem)
-				{
-					//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
-					if(plopper.suckUp(ei, ei.getItem()))
-						return;
-				}
-			}
+			//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
+			if(plopper.suckUp(ei, ei.getItem()))
+				return;
 		}
 	}
 

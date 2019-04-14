@@ -1,6 +1,8 @@
 package bl4ckscor3.mod.theplopper.tileentity;
 
 import bl4ckscor3.mod.theplopper.Configuration;
+import bl4ckscor3.mod.theplopper.PlopperTracker;
+import bl4ckscor3.mod.theplopper.TickingPloppersHandler;
 import bl4ckscor3.mod.theplopper.inventory.PlopperInventory;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -10,16 +12,20 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityPlopper extends TileEntity
+public class TileEntityPlopper extends TileEntity implements ITickable
 {
 	private PlopperInventory inventory = new PlopperInventory(this);
+	private boolean tracked = false;
+
 	/**
 	 * Adds the given {@link net.minecraft.item.ItemStack} to the inventory
 	 * @param ei The EntityItem that gets sucked up
@@ -67,6 +73,26 @@ public class TileEntityPlopper extends TileEntity
 
 		world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
 		return true;
+	}
+
+	@Override
+	public void update()
+	{
+		if(!tracked)
+		{
+			PlopperTracker.track(this);
+			TickingPloppersHandler.stopTicking(this);
+			tracked = true;
+		}
+	}
+
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+
+		PlopperTracker.stopTracking(this);
+		tracked = false;
 	}
 
 	@Override
@@ -140,11 +166,16 @@ public class TileEntityPlopper extends TileEntity
 	}
 
 	/**
-	 * @return The range this plopper will pick up items. Minimum 2, maximum 16 (with 7 upgrades installed)
+	 * @return The range this plopper will pick up items in
 	 */
-	public int getRange()
+	public AxisAlignedBB getRange()
 	{
 		//slot 7 is the upgrade slot
-		return 2 + inventory.getStackInSlot(7).getCount() * 2;
+		int range = 2 + inventory.getStackInSlot(7).getCount() * 2;
+		int x = getPos().getX();
+		int y = getPos().getY();
+		int z = getPos().getZ();
+
+		return new AxisAlignedBB(x - range, y - range, z - range, x + range, y + range, z + range);
 	}
 }
