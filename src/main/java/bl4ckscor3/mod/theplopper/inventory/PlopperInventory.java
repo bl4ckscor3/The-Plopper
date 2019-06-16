@@ -1,13 +1,10 @@
 package bl4ckscor3.mod.theplopper.inventory;
 
-import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 
 public class PlopperInventory implements IInventory
 {
@@ -22,24 +19,6 @@ public class PlopperInventory implements IInventory
 	public PlopperInventory(TileEntityPlopper te)
 	{
 		itemHandler = new PlopperItemHandler(te);
-	}
-
-	@Override
-	public ITextComponent getName()
-	{
-		return new TextComponentTranslation(ThePlopper.thePlopper.getTranslationKey());
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName()
-	{
-		return getName();
 	}
 
 	@Override
@@ -97,36 +76,21 @@ public class PlopperInventory implements IInventory
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer player)
+	public boolean isUsableByPlayer(PlayerEntity player)
 	{
 		return true;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {}
+	public void openInventory(PlayerEntity player) {}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {}
+	public void closeInventory(PlayerEntity player) {}
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack)
 	{
 		return true;
-	}
-
-	@Override
-	public int getField(int id)
-	{
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {}
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
 	}
 
 	@Override
@@ -152,11 +116,5 @@ public class PlopperInventory implements IInventory
 	public NonNullList<ItemStack> getContents()
 	{
 		return contents;
-	}
-
-	@Override
-	public ITextComponent getCustomName()
-	{
-		return getName();
 	}
 }

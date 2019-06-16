@@ -1,12 +1,15 @@
 package bl4ckscor3.mod.theplopper;
 
 import bl4ckscor3.mod.theplopper.block.BlockPlopper;
-import bl4ckscor3.mod.theplopper.gui.GuiHandler;
+import bl4ckscor3.mod.theplopper.container.ContainerPlopper;
+import bl4ckscor3.mod.theplopper.inventory.PlopperInventory;
 import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
 import net.minecraft.block.Block;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -18,26 +21,30 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.registries.ObjectHolder;
 
 @Mod(ThePlopper.MOD_ID)
 @EventBusSubscriber(bus=Bus.MOD)
 public class ThePlopper
 {
 	public static final String MOD_ID = "theplopper";
+	@ObjectHolder(MOD_ID + ":plopper")
 	public static Block thePlopper;
+	@ObjectHolder(MOD_ID + ":range_upgrade")
 	public static Item rangeUpgrade;
+	@ObjectHolder(MOD_ID + ":plopper")
 	public static TileEntityType<TileEntityPlopper> teTypePlopper;
+	@ObjectHolder(MOD_ID + ":plopper")
+	public static ContainerType<ContainerPlopper> cTypePlopper;
 
 	public ThePlopper()
 	{
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.CONFIG_SPEC);
-		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GuiHandler::getClientGuiElement);
 		MinecraftForge.EVENT_BUS.addListener(this::onItemExpire);
 		MinecraftForge.EVENT_BUS.addListener(this::onBlockBreak);
 		//		MinecraftForge.EVENT_BUS.addListener(this::onItemToss);
@@ -46,20 +53,28 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
-		event.getRegistry().register(thePlopper = new BlockPlopper());
+		event.getRegistry().register(new BlockPlopper());
 	}
 
 	@SubscribeEvent
-	public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event)
+	public static void registerTileEntityTypes(RegistryEvent.Register<TileEntityType<?>> event)
 	{
-		teTypePlopper = TileEntityType.register(thePlopper.getRegistryName().toString(), TileEntityType.Builder.create(TileEntityPlopper::new));
+		event.getRegistry().register(TileEntityType.Builder.create(TileEntityPlopper::new, thePlopper).build(null).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	@SubscribeEvent
-	public static void onRegistryEventRegisterItem(RegistryEvent.Register<Item> event)
+	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
-		event.getRegistry().register(rangeUpgrade = new Item(new Item.Properties().group(ItemGroup.REDSTONE).maxStackSize(7)).setRegistryName(new ResourceLocation(MOD_ID, "range_upgrade")));
-		event.getRegistry().register(new ItemBlock(thePlopper, new Item.Properties().group(ItemGroup.REDSTONE)).setRegistryName(thePlopper.getRegistryName().toString()));
+		event.getRegistry().register(new Item(new Item.Properties().group(ItemGroup.REDSTONE).maxStackSize(7)).setRegistryName(new ResourceLocation(MOD_ID, "range_upgrade")));
+		event.getRegistry().register(new BlockItem(thePlopper, new Item.Properties().group(ItemGroup.REDSTONE)).setRegistryName(thePlopper.getRegistryName()));
+	}
+
+	@SubscribeEvent
+	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event)
+	{
+		event.getRegistry().register(new ContainerType<ContainerPlopper>((windowId, playerInv) -> {
+			return new ContainerPlopper(windowId, playerInv, new Inventory(PlopperInventory.SLOTS));
+		}).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	public void onItemExpire(ItemExpireEvent event)
@@ -71,7 +86,7 @@ public class ThePlopper
 	 * Checks for any ploppers in increasing ranges and makes them suck up the item if applicable
 	 * @param ei The item to potentially suck up
 	 */
-	private static void checkForPloppers(EntityItem ei)
+	private static void checkForPloppers(ItemEntity ei)
 	{
 		if(ei.getEntityWorld().isRemote)
 			return;
@@ -98,7 +113,7 @@ public class ThePlopper
 	}
 
 	/**
-	 * For Testing purposes
+	 * For testing purposes
 	 */
 	//TODO: Comment out on release
 	//	public void onItemToss(ItemTossEvent event)

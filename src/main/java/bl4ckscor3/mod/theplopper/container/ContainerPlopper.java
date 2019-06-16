@@ -2,17 +2,18 @@ package bl4ckscor3.mod.theplopper.container;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.inventory.ItemValidatorSlot;
-import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerPlopper extends Container
 {
-	public ContainerPlopper(InventoryPlayer playerInv, TileEntityPlopper tep)
+	public ContainerPlopper(int windowId, PlayerInventory playerInv, IInventory plopperInv)
 	{
+		super(ThePlopper.cTypePlopper, windowId);
 		//player inventory
 		for(int i = 0; i < 3; i++)
 		{
@@ -31,15 +32,15 @@ public class ContainerPlopper extends Container
 		//plopper inventory
 		for(int i = 0; i < 7; i++)
 		{
-			addSlot(new ItemValidatorSlot(tep.getInventory(), i, 26 + i * 18, 20, stack -> false));
+			addSlot(new ItemValidatorSlot(plopperInv, i, 26 + i * 18, 20, stack -> false));
 		}
 
 		//upgrade slot
-		addSlot(new ItemValidatorSlot(tep.getInventory(), 7, 177, 7, stack -> stack.getItem() == ThePlopper.rangeUpgrade));
+		addSlot(new ItemValidatorSlot(plopperInv, 7, 177, 7, stack -> stack.getItem() == ThePlopper.rangeUpgrade));
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int index) //basically the chest code, but modified a bit to e.g. include custom slots
+	public ItemStack transferStackInSlot(PlayerEntity player, int index) //basically the chest code, but modified a bit to e.g. include custom slots
 	{
 		ItemStack copy = ItemStack.EMPTY;
 		Slot slot = inventorySlots.get(index);
@@ -82,7 +83,7 @@ public class ContainerPlopper extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(PlayerEntity player)
 	{
 		return true;
 	}

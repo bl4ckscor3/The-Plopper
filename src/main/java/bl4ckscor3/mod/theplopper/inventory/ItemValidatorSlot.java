@@ -3,7 +3,7 @@ package bl4ckscor3.mod.theplopper.inventory;
 import java.util.function.Function;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 /**

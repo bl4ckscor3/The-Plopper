@@ -1,21 +1,23 @@
 package bl4ckscor3.mod.theplopper.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.container.ContainerPlopper;
-import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
-public class GuiPlopper extends GuiContainer
+public class GuiPlopper extends ContainerScreen<ContainerPlopper>
 {
 	private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("theplopper:textures/gui/container/plopper.png");
 
-	public GuiPlopper(InventoryPlayer playerInv, TileEntityPlopper te)
+	public GuiPlopper(ContainerPlopper container, PlayerInventory playerInv, ITextComponent name)
 	{
-		super(new ContainerPlopper(playerInv, te));
+		super(container, playerInv, name);
 
 		xSize = 200;
 		ySize = 133;
@@ -28,7 +30,7 @@ public class GuiPlopper extends GuiContainer
 
 		String name = I18n.format(ThePlopper.thePlopper.getTranslationKey());
 
-		fontRenderer.drawString(name, (xSize - 24) / 2 - fontRenderer.getStringWidth(name) / 2, 7, 0x404040);
+		font.drawString(name, (xSize - 24) / 2 - font.getStringWidth(name) / 2, 7, 0x404040);
 	}
 
 	@Override
@@ -42,9 +44,9 @@ public class GuiPlopper extends GuiContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
-		drawDefaultBackground();
+		renderBackground();
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(GUI_TEXTURE);
-		drawTexturedModalRect((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
+		Minecraft.getInstance().getTextureManager().bindTexture(GUI_TEXTURE);
+		blit((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
 	}
 }

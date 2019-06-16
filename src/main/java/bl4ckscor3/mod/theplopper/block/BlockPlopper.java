@@ -3,35 +3,33 @@ package bl4ckscor3.mod.theplopper.block;
 import java.util.List;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import bl4ckscor3.mod.theplopper.gui.GuiHandler;
-import bl4ckscor3.mod.theplopper.gui.PlopperInteractionObject;
 import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BlockPlopper extends BlockContainer
+public class BlockPlopper extends ContainerBlock
 {
 	public static final String NAME = "plopper";
 
@@ -43,7 +41,7 @@ public class BlockPlopper extends BlockContainer
 	}
 
 	@Override
-	public VoxelShape getShape(IBlockState state, IBlockReader source, BlockPos pos)
+	public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext ctx)
 	{
 		VoxelShape base = Block.makeCuboidShape(2, 0, 2, 14, 1, 14);
 		VoxelShape hopper1 = Block.makeCuboidShape(7, 1, 7, 9, 2, 9);
@@ -55,35 +53,43 @@ public class BlockPlopper extends BlockContainer
 	}
 
 	@Override
-	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
 	{
 		if(!world.isRemote)
-			NetworkHooks.openGui((EntityPlayerMP)player, new PlopperInteractionObject(GuiHandler.PLOPPER_GUI_ID, world, pos), data -> data.writeBlockPos(pos));
+		{
+			INamedContainerProvider containerProvider = getContainer(state, world, pos);
+
+			if(containerProvider != null)
+				player.openContainer(containerProvider);
+		}
+
 		return true;
+	}
+
+	@Override
+	public INamedContainerProvider getContainer(BlockState state, World world, BlockPos pos)
+	{
+		TileEntity te = world.getTileEntity(pos);
+
+		return te instanceof TileEntityPlopper ? (INamedContainerProvider)te : null;
 	}
 
 	@Override
 	public void addInformation(ItemStack stack, IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
-		tooltip.add(new TextComponentString(TextFormatting.GRAY + new TextComponentTranslation("theplopper:plopper.tooltip").getFormattedText()));
+		tooltip.add(new StringTextComponent(TextFormatting.GRAY + new TranslationTextComponent("theplopper:plopper.tooltip").getFormattedText()));
 	}
 
 	@Override
-	public boolean isNormalCube(IBlockState state, IBlockReader world, BlockPos pos)
+	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState state)
+	public BlockRenderType getRenderType(BlockState state)
 	{
-		return false;
-	}
-
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state)
-	{
-		return EnumBlockRenderType.MODEL;
+		return BlockRenderType.MODEL;
 	}
 
 	@Override
