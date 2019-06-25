@@ -1,3 +1,6 @@
+### v1.2.2
+- Fix The Plopper not dropping in survival mode
+
 ### v1.2.1
 - Performance improvements
 
