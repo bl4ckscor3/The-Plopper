@@ -1,3 +1,6 @@
+### v1.2.3
+- Fix compatibility with Forge 28.0.45+
+
 ### v1.2.2
 - Fix The Plopper not dropping in survival mode
 

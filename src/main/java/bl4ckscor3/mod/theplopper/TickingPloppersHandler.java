@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 @EventBusSubscriber(modid=ThePlopper.MOD_ID)
 public class TickingPloppersHandler

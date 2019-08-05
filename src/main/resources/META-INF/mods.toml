@@ -1,9 +1,9 @@
 modLoader="javafml" #mandatory
-loaderVersion="[27,)" #mandatory
+loaderVersion="[28,)" #mandatory
 
 [[mods]] #mandatory
 	modId="theplopper" #mandatory
-	version="v1.2.2" #mandatory
+	version="v1.2.3" #mandatory
 	displayName="The Plopper" #mandatory
 	description='''A block that picks up items that are about to despawn.''' #mandatory
 	issueTrackerURL="https://github.com/bl4ckscor3/The-Plopper/issues"
@@ -13,13 +13,13 @@ loaderVersion="[27,)" #mandatory
 [[dependencies.theplopper]]
     modId="forge"
     mandatory=true
-    versionRange="[27,)"
+    versionRange="[28.0.45,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.theplopper]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.14, 1.15)"
+    versionRange="[1.14,1.15)"
     ordering="NONE"
     side="BOTH"
