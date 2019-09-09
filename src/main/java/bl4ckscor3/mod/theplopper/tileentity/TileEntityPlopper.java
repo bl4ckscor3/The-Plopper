@@ -28,12 +28,13 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class TileEntityPlopper extends TileEntity implements ITickableTileEntity, INamedContainerProvider
 {
 	private PlopperInventory inventory = new PlopperInventory(this);
-	private LazyOptional inventoryHolder = LazyOptional.of(() -> inventory.getItemHandler());
+	private final LazyOptional<IItemHandler> inventoryHolder = LazyOptional.of(() -> inventory.getItemHandler());
 	private boolean tracked = false;
 
 	public TileEntityPlopper()
@@ -159,9 +160,9 @@ public class TileEntityPlopper extends TileEntity implements ITickableTileEntity
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side)
 	{
-		if(side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get())
-			return cap.orEmpty(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inventoryHolder);
-		else return LazyOptional.empty();
+		if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get()))
+			return inventoryHolder.cast();
+		else return super.getCapability(cap, side);
 	}
 
 	/**
