@@ -1,3 +1,6 @@
+## v1.0.2
+- Added support for [Public Gui Announcement](https://curseforge.com/minecraft/mc-mods/public-gui-announcement)
+
 ### v1.2.3
 - Fix compatibility with Forge 28.0.45+
 
