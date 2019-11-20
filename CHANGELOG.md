@@ -1,11 +1,14 @@
-## v1.0.2
+## v1.3
+- The Plopper is now waterloggable
+
+### v1.2.4
 - Added support for [Public Gui Announcement](https://curseforge.com/minecraft/mc-mods/public-gui-announcement)
 
 ### v1.2.3
-- Fix compatibility with Forge 28.0.45+
+- Fixed compatibility with Forge 28.0.45+
 
 ### v1.2.2
-- Fix The Plopper not dropping in survival mode
+- Fixed the plopper not dropping in survival mode
 
 ### v1.2.1
 - Performance improvements
@@ -13,12 +16,12 @@
 ## v1.2
 - Added range upgrade
 - Added French translation (Thanks Lykrast!)
-- Fix tooltips not showing up in The Plopper's GUI
-- Fix ItemStacks not getting synchronized correctly when the GUI is open
+- Fixed tooltips not showing up in the plopper's GUI
+- Fixed item stacks not getting synchronized correctly when the GUI is open
 - Removed range config option
 
 ## v1.1
-- Fix items stacking in the plopper's inventory when they had a different metadata but the same item ID
+- Fixed items stacking in the plopper's inventory when they had a different metadata but the same item ID
 
 # v1.0
 - Initial release
