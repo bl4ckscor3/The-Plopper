@@ -1,9 +1,9 @@
-package bl4ckscor3.mod.theplopper.gui;
+package bl4ckscor3.mod.theplopper.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import bl4ckscor3.mod.theplopper.container.ContainerPlopper;
+import bl4ckscor3.mod.theplopper.container.PlopperContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
@@ -11,11 +11,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiPlopper extends ContainerScreen<ContainerPlopper>
+public class PlopperScreen extends ContainerScreen<PlopperContainer>
 {
 	private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("theplopper:textures/gui/container/plopper.png");
 
-	public GuiPlopper(ContainerPlopper container, PlayerInventory playerInv, ITextComponent name)
+	public PlopperScreen(PlopperContainer container, PlayerInventory playerInv, ITextComponent name)
 	{
 		super(container, playerInv, name);
 

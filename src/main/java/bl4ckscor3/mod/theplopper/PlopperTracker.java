@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
+import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +26,7 @@ public class PlopperTracker
 	 * Starts tracking a plopper
 	 * @param te The plopper to track
 	 */
-	public static void track(TileEntityPlopper te)
+	public static void track(PlopperTileEntity te)
 	{
 		getTrackedPloppers(te.getWorld()).add(te.getPos().toImmutable());
 	}
@@ -35,7 +35,7 @@ public class PlopperTracker
 	 * Stops tracking the given plopper. Use when e.g. removing the tile entity from the world
 	 * @param te The plopper to stop tracking
 	 */
-	public static void stopTracking(TileEntityPlopper te)
+	public static void stopTracking(PlopperTileEntity te)
 	{
 		getTrackedPloppers(te.getWorld()).remove(te.getPos());
 	}
@@ -46,10 +46,10 @@ public class PlopperTracker
 	 * @param pos The block position
 	 * @return A list of all ploppers that have the given block position in their range
 	 */
-	public static List<TileEntityPlopper> getPloppersInRange(World world, BlockPos pos)
+	public static List<PlopperTileEntity> getPloppersInRange(World world, BlockPos pos)
 	{
 		final Collection<BlockPos> ploppers = getTrackedPloppers(world);
-		List<TileEntityPlopper> returnValue = new ArrayList<>();
+		List<PlopperTileEntity> returnValue = new ArrayList<>();
 
 		for(Iterator<BlockPos> it = ploppers.iterator(); it.hasNext(); )
 		{
@@ -59,10 +59,10 @@ public class PlopperTracker
 			{
 				TileEntity potentialPlopper = world.getTileEntity(plopperPos);
 
-				if(potentialPlopper instanceof TileEntityPlopper)
+				if(potentialPlopper instanceof PlopperTileEntity)
 				{
-					if(canPlopperReach((TileEntityPlopper)potentialPlopper, pos))
-						returnValue.add((TileEntityPlopper)potentialPlopper);
+					if(canPlopperReach((PlopperTileEntity)potentialPlopper, pos))
+						returnValue.add((PlopperTileEntity)potentialPlopper);
 
 					continue;
 				}
@@ -96,7 +96,7 @@ public class PlopperTracker
 	 * @param te The plopper
 	 * @param pos The block position
 	 */
-	private static boolean canPlopperReach(TileEntityPlopper te, BlockPos pos)
+	private static boolean canPlopperReach(PlopperTileEntity te, BlockPos pos)
 	{
 		AxisAlignedBB plopperRange = te.getRange();
 

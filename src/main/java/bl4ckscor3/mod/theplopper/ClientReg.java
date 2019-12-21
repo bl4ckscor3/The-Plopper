@@ -1,6 +1,6 @@
 package bl4ckscor3.mod.theplopper;
 
-import bl4ckscor3.mod.theplopper.gui.GuiPlopper;
+import bl4ckscor3.mod.theplopper.screen.PlopperScreen;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,6 +14,6 @@ public class ClientReg
 	@SubscribeEvent
 	public static void onFMLClientSetup(FMLClientSetupEvent event)
 	{
-		ScreenManager.registerFactory(ThePlopper.cTypePlopper, GuiPlopper::new);
+		ScreenManager.registerFactory(ThePlopper.cTypePlopper, PlopperScreen::new);
 	}
 }

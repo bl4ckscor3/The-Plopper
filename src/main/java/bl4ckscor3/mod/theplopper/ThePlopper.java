@@ -1,9 +1,9 @@
 package bl4ckscor3.mod.theplopper;
 
-import bl4ckscor3.mod.theplopper.block.BlockPlopper;
-import bl4ckscor3.mod.theplopper.container.ContainerPlopper;
+import bl4ckscor3.mod.theplopper.block.PlopperBlock;
+import bl4ckscor3.mod.theplopper.container.PlopperContainer;
 import bl4ckscor3.mod.theplopper.inventory.PlopperInventory;
-import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
+import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.Inventory;
@@ -38,9 +38,9 @@ public class ThePlopper
 	@ObjectHolder(MOD_ID + ":range_upgrade")
 	public static Item rangeUpgrade;
 	@ObjectHolder(MOD_ID + ":plopper")
-	public static TileEntityType<TileEntityPlopper> teTypePlopper;
+	public static TileEntityType<PlopperTileEntity> teTypePlopper;
 	@ObjectHolder(MOD_ID + ":plopper")
-	public static ContainerType<ContainerPlopper> cTypePlopper;
+	public static ContainerType<PlopperContainer> cTypePlopper;
 
 	public ThePlopper()
 	{
@@ -53,13 +53,13 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
-		event.getRegistry().register(new BlockPlopper());
+		event.getRegistry().register(new PlopperBlock());
 	}
 
 	@SubscribeEvent
 	public static void registerTileEntityTypes(RegistryEvent.Register<TileEntityType<?>> event)
 	{
-		event.getRegistry().register(TileEntityType.Builder.create(TileEntityPlopper::new, thePlopper).build(null).setRegistryName(thePlopper.getRegistryName()));
+		event.getRegistry().register(TileEntityType.Builder.create(PlopperTileEntity::new, thePlopper).build(null).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	@SubscribeEvent
@@ -72,8 +72,8 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event)
 	{
-		event.getRegistry().register(new ContainerType<ContainerPlopper>((windowId, playerInv) -> {
-			return new ContainerPlopper(windowId, playerInv, new Inventory(PlopperInventory.SLOTS));
+		event.getRegistry().register(new ContainerType<PlopperContainer>((windowId, playerInv) -> {
+			return new PlopperContainer(windowId, playerInv, new Inventory(PlopperInventory.SLOTS));
 		}).setRegistryName(thePlopper.getRegistryName()));
 	}
 
@@ -91,7 +91,7 @@ public class ThePlopper
 		if(ei.getEntityWorld().isRemote)
 			return;
 
-		for(TileEntityPlopper plopper : PlopperTracker.getPloppersInRange(ei.getEntityWorld(), ei.getPosition()))
+		for(PlopperTileEntity plopper : PlopperTracker.getPloppersInRange(ei.getEntityWorld(), ei.getPosition()))
 		{
 			//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
 			if(plopper.suckUp(ei, ei.getItem()))
@@ -103,9 +103,9 @@ public class ThePlopper
 	{
 		TileEntity te = event.getWorld().getTileEntity(event.getPos());
 
-		if(te instanceof TileEntityPlopper && event.getWorld() instanceof World)
+		if(te instanceof PlopperTileEntity && event.getWorld() instanceof World)
 		{
-			for(ItemStack stack : ((TileEntityPlopper)te).getInventory().getContents())
+			for(ItemStack stack : ((PlopperTileEntity)te).getInventory().getContents())
 			{
 				Block.spawnAsEntity((World)event.getWorld(), event.getPos(), stack);
 			}

@@ -1,6 +1,6 @@
 package bl4ckscor3.mod.theplopper.inventory;
 
-import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
+import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -16,7 +16,7 @@ public class PlopperInventory implements IInventory
 	 * Sets up this inventory with the container
 	 * @param te The container of this inventory
 	 */
-	public PlopperInventory(TileEntityPlopper te)
+	public PlopperInventory(PlopperTileEntity te)
 	{
 		itemHandler = new PlopperItemHandler(te);
 	}

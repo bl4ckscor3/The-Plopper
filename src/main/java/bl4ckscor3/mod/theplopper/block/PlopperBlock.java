@@ -3,7 +3,7 @@ package bl4ckscor3.mod.theplopper.block;
 import java.util.List;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
+import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -39,12 +39,12 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-public class BlockPlopper extends ContainerBlock implements IWaterLoggable
+public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 {
 	public static final String NAME = "plopper";
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-	public BlockPlopper()
+	public PlopperBlock()
 	{
 		super(Block.Properties.create(Material.IRON, MaterialColor.STONE).hardnessAndResistance(3.0F, 8.0F).sound(SoundType.METAL));
 
@@ -83,7 +83,7 @@ public class BlockPlopper extends ContainerBlock implements IWaterLoggable
 	{
 		TileEntity te = world.getTileEntity(pos);
 
-		return te instanceof TileEntityPlopper ? (INamedContainerProvider)te : null;
+		return te instanceof PlopperTileEntity ? (INamedContainerProvider)te : null;
 	}
 
 	@Override
@@ -134,6 +134,6 @@ public class BlockPlopper extends ContainerBlock implements IWaterLoggable
 	@Override
 	public TileEntity createNewTileEntity(IBlockReader world)
 	{
-		return new TileEntityPlopper();
+		return new PlopperTileEntity();
 	}
 }

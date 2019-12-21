@@ -1,14 +1,14 @@
 package bl4ckscor3.mod.theplopper.inventory;
 
-import bl4ckscor3.mod.theplopper.tileentity.TileEntityPlopper;
+import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class PlopperItemHandler implements IItemHandlerModifiable
 {
-	private TileEntityPlopper tileEntity;
+	private PlopperTileEntity tileEntity;
 
-	public PlopperItemHandler(TileEntityPlopper te)
+	public PlopperItemHandler(PlopperTileEntity te)
 	{
 		tileEntity = te;
 	}
@@ -113,7 +113,7 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 	/**
 	 * @return The TileEntity that is bound to the inventory whith this item handler
 	 */
-	public TileEntityPlopper getTileEntity()
+	public PlopperTileEntity getTileEntity()
 	{
 		return tileEntity;
 	}

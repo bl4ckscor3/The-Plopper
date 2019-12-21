@@ -9,9 +9,9 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerPlopper extends Container
+public class PlopperContainer extends Container
 {
-	public ContainerPlopper(int windowId, PlayerInventory playerInv, IInventory plopperInv)
+	public PlopperContainer(int windowId, PlayerInventory playerInv, IInventory plopperInv)
 	{
 		super(ThePlopper.cTypePlopper, windowId);
 		//player inventory
