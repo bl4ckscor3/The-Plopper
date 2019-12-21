@@ -68,10 +68,9 @@ public class TileEntityPlopper extends TileEntity implements ITickableTileEntity
 
 		if(!remainder.isEmpty())
 		{
-			ItemEntity newEi = new ItemEntity(ei.getEntityWorld(), ei.posX, ei.posY, ei.posZ, remainder);
+			ItemEntity newEi = new ItemEntity(ei.getEntityWorld(), ei.func_226277_ct_(), ei.func_226278_cu_(), ei.func_226281_cx_(), remainder);
 
 			ei.remove();
-			newEi.setAgeToCreativeDespawnTime();
 			newEi.setMotion(0.0D, 0.0D, 0.0D);
 			newEi.getEntityWorld().addEntity(newEi);
 		}
@@ -80,7 +79,7 @@ public class TileEntityPlopper extends TileEntity implements ITickableTileEntity
 
 		if(!world.isRemote && Configuration.CONFIG.displayParticles.get())
 		{
-			((ServerWorld)world).spawnParticle(ParticleTypes.SMOKE, ei.posX, ei.posY + 0.25D, ei.posZ, 10, 0.0D, 0.1D, 0.0D, 0.001D);
+			((ServerWorld)world).spawnParticle(ParticleTypes.SMOKE, ei.func_226277_ct_(), ei.func_226278_cu_() + 0.25D, ei.func_226281_cx_(), 10, 0.0D, 0.1D, 0.0D, 0.001D);
 			((ServerWorld)world).spawnParticle(ParticleTypes.ENCHANT, getPos().getX() + 0.5D, getPos().getY() + 1.5D, getPos().getZ() + 0.5D, 20, 0.0D, 0.0D, 0.0D, 0.3D);
 		}
 

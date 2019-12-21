@@ -1,6 +1,6 @@
 package bl4ckscor3.mod.theplopper.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.container.ContainerPlopper;
@@ -45,7 +45,7 @@ public class GuiPlopper extends ContainerScreen<ContainerPlopper>
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
 		renderBackground();
-		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		Minecraft.getInstance().getTextureManager().bindTexture(GUI_TEXTURE);
 		blit((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
 	}
