@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -47,7 +48,7 @@ public class ThePlopper
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.CONFIG_SPEC);
 		MinecraftForge.EVENT_BUS.addListener(this::onItemExpire);
 		MinecraftForge.EVENT_BUS.addListener(this::onBlockBreak);
-		//		MinecraftForge.EVENT_BUS.addListener(this::onItemToss);
+		MinecraftForge.EVENT_BUS.addListener(this::onItemToss);
 	}
 
 	@SubscribeEvent
@@ -72,7 +73,7 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event)
 	{
-		event.getRegistry().register(new ContainerType<PlopperContainer>((windowId, playerInv) -> {
+		event.getRegistry().register(new ContainerType<>((windowId, playerInv) -> {
 			return new PlopperContainer(windowId, playerInv, new Inventory(PlopperInventory.SLOTS));
 		}).setRegistryName(thePlopper.getRegistryName()));
 	}
@@ -91,7 +92,7 @@ public class ThePlopper
 		if(ei.getEntityWorld().isRemote)
 			return;
 
-		for(PlopperTileEntity plopper : PlopperTracker.getPloppersInRange(ei.getEntityWorld(), ei.getPosition()))
+		for(PlopperTileEntity plopper : PlopperTracker.getPloppersInRange(ei.getEntityWorld(), ei.func_233580_cy_()))
 		{
 			//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
 			if(plopper.suckUp(ei, ei.getItem()))
@@ -116,8 +117,8 @@ public class ThePlopper
 	 * For testing purposes
 	 */
 	//TODO: Comment out on release
-	//	public void onItemToss(ItemTossEvent event)
-	//	{
-	//		checkForPloppers(event.getEntityItem());
-	//	}
+	public void onItemToss(ItemTossEvent event)
+	{
+		checkForPloppers(event.getEntityItem());
+	}
 }

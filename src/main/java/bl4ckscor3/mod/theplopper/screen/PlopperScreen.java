@@ -1,12 +1,11 @@
 package bl4ckscor3.mod.theplopper.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.container.PlopperContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -21,32 +20,29 @@ public class PlopperScreen extends ContainerScreen<PlopperContainer>
 
 		xSize = 200;
 		ySize = 133;
+		field_238745_s_ = 40; //position "Inventory" correctly
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+	protected void func_230451_b_(MatrixStack matrix, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-
-		String name = I18n.format(ThePlopper.thePlopper.getTranslationKey());
-
-		font.drawString(name, (xSize - 24) / 2 - font.getStringWidth(name) / 2, 7, 0x404040);
+		super.func_230451_b_(matrix, mouseX, mouseY);
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks)
+	public void render(MatrixStack matrix, int mouseX, int mouseY, float partialTicks)
 	{
-		super.render(mouseX, mouseY, partialTicks);
+		super.render(matrix, mouseX, mouseY, partialTicks);
 
-		renderHoveredToolTip(mouseX, mouseY);
+		func_230459_a_(matrix, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
+	protected void func_230450_a_(MatrixStack matrix, float partialTicks, int mouseX, int mouseY)
 	{
-		renderBackground();
+		renderBackground(matrix);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		Minecraft.getInstance().getTextureManager().bindTexture(GUI_TEXTURE);
-		blit((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
+		blit(matrix, (width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
 	}
 }

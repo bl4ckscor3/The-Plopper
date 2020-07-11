@@ -14,8 +14,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
@@ -32,7 +32,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
@@ -43,10 +43,11 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 {
 	public static final String NAME = "plopper";
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+	private static final Style GRAY_STYLE = Style.EMPTY.applyFormatting(TextFormatting.GRAY);
 
 	public PlopperBlock()
 	{
-		super(Block.Properties.create(Material.IRON, MaterialColor.STONE).hardnessAndResistance(3.0F, 8.0F).sound(SoundType.METAL));
+		super(Block.Properties.create(Material.IRON, MaterialColor.STONE).hardnessAndResistance(3.0F, 8.0F).sound(SoundType.METAL).setOpaque((state, world, pos) -> false));
 
 		setRegistryName(ThePlopper.MOD_ID + ":" + NAME);
 		setDefaultState(stateContainer.getBaseState().with(WATERLOGGED, false));
@@ -65,7 +66,7 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 	}
 
 	@Override
-	public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) //onBlockActivated
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
 	{
 		if(!world.isRemote)
 		{
@@ -89,7 +90,7 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 	@Override
 	public void addInformation(ItemStack stack, IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
-		tooltip.add(new StringTextComponent(TextFormatting.GRAY + new TranslationTextComponent("theplopper:plopper.tooltip").getFormattedText()));
+		tooltip.add(new TranslationTextComponent("theplopper:plopper.tooltip").func_230530_a_(GRAY_STYLE));
 	}
 
 	@Override
@@ -108,7 +109,7 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 	}
 
 	@Override
-	public IFluidState getFluidState(BlockState state)
+	public FluidState getFluidState(BlockState state)
 	{
 		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
 	}
@@ -117,12 +118,6 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 	protected void fillStateContainer(Builder<Block, BlockState> builder)
 	{
 		builder.add(WATERLOGGED);
-	}
-
-	@Override
-	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos)
-	{
-		return false;
 	}
 
 	@Override

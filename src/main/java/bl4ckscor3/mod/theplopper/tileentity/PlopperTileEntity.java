@@ -6,6 +6,7 @@ import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.TickingPloppersHandler;
 import bl4ckscor3.mod.theplopper.container.PlopperContainer;
 import bl4ckscor3.mod.theplopper.inventory.PlopperInventory;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -19,8 +20,8 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -29,7 +30,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class PlopperTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider
 {
@@ -68,7 +68,7 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 
 		if(!remainder.isEmpty())
 		{
-			ItemEntity newIe = new ItemEntity(ie.getEntityWorld(), ie.func_226277_ct_(), ie.func_226278_cu_(), ie.func_226281_cx_(), remainder);
+			ItemEntity newIe = new ItemEntity(ie.getEntityWorld(), ie.getPosX(), ie.getPosY(), ie.getPosZ(), remainder);
 
 			ie.remove();
 			newIe.setMotion(0.0D, 0.0D, 0.0D);
@@ -79,12 +79,12 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 
 		if(!world.isRemote && Configuration.CONFIG.displayParticles.get())
 		{
-			((ServerWorld)world).spawnParticle(ParticleTypes.SMOKE, ie.func_226277_ct_(), ie.func_226278_cu_() + 0.25D, ie.func_226281_cx_(), 10, 0.0D, 0.1D, 0.0D, 0.001D);
+			((ServerWorld)world).spawnParticle(ParticleTypes.SMOKE, ie.getPosX(), ie.getPosY() + 0.25D, ie.getPosZ(), 10, 0.0D, 0.1D, 0.0D, 0.001D);
 			((ServerWorld)world).spawnParticle(ParticleTypes.ENCHANT, getPos().getX() + 0.5D, getPos().getY() + 1.5D, getPos().getZ() + 0.5D, 20, 0.0D, 0.0D, 0.0D, 0.3D);
 		}
 
 		if(Configuration.CONFIG.playSound.get())
-			ie.getEntityWorld().playSound(null, ie.getPosition(), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.chicken.egg")), SoundCategory.NEUTRAL, 1.0F, 1.0F);
+			ie.getEntityWorld().playSound(null, ie.func_233580_cy_(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.NEUTRAL, 1.0F, 1.0F);
 
 		world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
 		return true;
@@ -125,11 +125,11 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
 	{
-		read(pkt.getNbtCompound());
+		read(getBlockState(), pkt.getNbtCompound());
 	}
 
 	@Override
-	public void read(CompoundNBT compound)
+	public void read(BlockState state, CompoundNBT compound)
 	{
 		CompoundNBT invTag = (CompoundNBT)compound.get("PlopperInventory");
 
@@ -139,7 +139,7 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 				inventory.setInventorySlotContents(i, ItemStack.read((CompoundNBT)invTag.get("Slot" + i)));
 		}
 
-		super.read(compound);
+		super.read(state, compound);
 	}
 
 	@Override

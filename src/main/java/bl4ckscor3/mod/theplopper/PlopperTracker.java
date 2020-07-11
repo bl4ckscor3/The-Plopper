@@ -10,8 +10,10 @@ import java.util.Map;
 
 import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 
 /**
@@ -20,7 +22,7 @@ import net.minecraft.world.World;
  */
 public class PlopperTracker
 {
-	private static final Map<Integer,Collection<BlockPos>> trackedPloppers = new HashMap<>();
+	private static final Map<RegistryKey<DimensionType>,Collection<BlockPos>> trackedPloppers = new HashMap<>();
 
 	/**
 	 * Starts tracking a plopper
@@ -80,12 +82,12 @@ public class PlopperTracker
 	 */
 	private static Collection<BlockPos> getTrackedPloppers(World world)
 	{
-		Collection<BlockPos> ploppers = trackedPloppers.get(world.getDimension().getType().getId());
+		Collection<BlockPos> ploppers = trackedPloppers.get(world.func_234922_V_());
 
 		if(ploppers == null)
 		{
-			ploppers = new HashSet<BlockPos>();
-			trackedPloppers.put(world.getDimension().getType().getId(), ploppers);
+			ploppers = new HashSet<>();
+			trackedPloppers.put(world.func_234922_V_(), ploppers);
 		}
 
 		return ploppers;
