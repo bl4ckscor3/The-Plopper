@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = '1.14.4-v1.3'
+version = '1.14.4-v1.3.1'
 group = 'bl4ckscor3.mod.theplopper'
 archivesBaseName = 'theplopper'
 
