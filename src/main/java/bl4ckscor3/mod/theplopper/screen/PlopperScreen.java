@@ -20,13 +20,7 @@ public class PlopperScreen extends ContainerScreen<PlopperContainer>
 
 		xSize = 200;
 		ySize = 133;
-		field_238745_s_ = 40; //position "Inventory" correctly
-	}
-
-	@Override
-	protected void func_230451_b_(MatrixStack matrix, int mouseX, int mouseY)
-	{
-		super.func_230451_b_(matrix, mouseX, mouseY);
+		playerInventoryTitleY = 40; //position "Inventory" correctly
 	}
 
 	@Override
@@ -38,7 +32,7 @@ public class PlopperScreen extends ContainerScreen<PlopperContainer>
 	}
 
 	@Override
-	protected void func_230450_a_(MatrixStack matrix, float partialTicks, int mouseX, int mouseY)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrix, float partialTicks, int mouseX, int mouseY)
 	{
 		renderBackground(matrix);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);

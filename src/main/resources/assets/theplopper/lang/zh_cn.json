@@ -1,0 +1,5 @@
+{
+    "block.theplopper.plopper": "掉落物收集器",
+    "item.theplopper.range_upgrade": "范围升级",
+    "theplopper:plopper.tooltip": "把附近生成的掉落物都捡起来。"
+}

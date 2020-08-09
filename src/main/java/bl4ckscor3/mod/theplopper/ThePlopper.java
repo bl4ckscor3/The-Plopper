@@ -92,7 +92,7 @@ public class ThePlopper
 		if(ei.getEntityWorld().isRemote)
 			return;
 
-		for(PlopperTileEntity plopper : PlopperTracker.getPloppersInRange(ei.getEntityWorld(), ei.func_233580_cy_()))
+		for(PlopperTileEntity plopper : PlopperTracker.getPloppersInRange(ei.getEntityWorld(), ei.getPosition()))
 		{
 			//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
 			if(plopper.suckUp(ei, ei.getItem()))

@@ -84,7 +84,7 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 		}
 
 		if(Configuration.CONFIG.playSound.get())
-			ie.getEntityWorld().playSound(null, ie.func_233580_cy_(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.NEUTRAL, 1.0F, 1.0F);
+			ie.getEntityWorld().playSound(null, ie.getPosition(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.NEUTRAL, 1.0F, 1.0F);
 
 		world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
 		return true;

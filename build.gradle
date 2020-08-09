@@ -11,14 +11,14 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = '1.16.1-v1.3'
+version = '1.16.1-v1.3.1'
 group = 'bl4ckscor3.mod.theplopper'
 archivesBaseName = 'theplopper'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200707-1.16.1'
+    mappings channel: 'snapshot', version: '20200723-1.16.1'
 	
     runs {
         client {
@@ -47,16 +47,16 @@ minecraft {
 
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.62'
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.75'
 }
 
 jar {
     manifest {
         attributes(["Specification-Title": "The Plopper",
                     "Specification-Vendor": "bl4ckscor3",
-                    "Specification-Version": "v1.3",
+                    "Specification-Version": "v1.3.1",
                     "Implementation-Title": "The Plopper",
-                    "Implementation-Version": "v1.3",
+                    "Implementation-Version": "v1.3.1",
                     "Implementation-Vendor" :"bl4ckscor3",
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
     }

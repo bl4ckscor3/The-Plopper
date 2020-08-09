@@ -90,7 +90,7 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 	@Override
 	public void addInformation(ItemStack stack, IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
-		tooltip.add(new TranslationTextComponent("theplopper:plopper.tooltip").func_230530_a_(GRAY_STYLE));
+		tooltip.add(new TranslationTextComponent("theplopper:plopper.tooltip").setStyle(GRAY_STYLE));
 	}
 
 	@Override

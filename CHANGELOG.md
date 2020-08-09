@@ -1,3 +1,6 @@
+### v1.3.1
+- Added Chinese translation (Thanks Meawerful!)
+
 ## v1.3
 - The Plopper is now waterloggable
 
