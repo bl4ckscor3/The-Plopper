@@ -7,7 +7,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 /**
- * Slot to handle the validity item more easily
+ * Slot to handle the validity of an item more easily
  */
 public class ItemValidatorSlot extends Slot
 {
