@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = '1.16.1-v1.3.1'
+version = '1.16.2-v1.3.1'
 group = 'bl4ckscor3.mod.theplopper'
 archivesBaseName = 'theplopper'
 
@@ -47,7 +47,7 @@ minecraft {
 
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.75'
+    minecraft 'net.minecraftforge:forge:1.16.2-33.0.0'
 }
 
 jar {

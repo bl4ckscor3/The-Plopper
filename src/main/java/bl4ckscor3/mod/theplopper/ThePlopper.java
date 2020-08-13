@@ -19,7 +19,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
-import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -48,7 +47,7 @@ public class ThePlopper
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.CONFIG_SPEC);
 		MinecraftForge.EVENT_BUS.addListener(this::onItemExpire);
 		MinecraftForge.EVENT_BUS.addListener(this::onBlockBreak);
-		MinecraftForge.EVENT_BUS.addListener(this::onItemToss);
+		//		MinecraftForge.EVENT_BUS.addListener(this::onItemToss);
 	}
 
 	@SubscribeEvent
@@ -117,8 +116,8 @@ public class ThePlopper
 	 * For testing purposes
 	 */
 	//TODO: Comment out on release
-	public void onItemToss(ItemTossEvent event)
-	{
-		checkForPloppers(event.getEntityItem());
-	}
+	//	public void onItemToss(ItemTossEvent event)
+	//	{
+	//		checkForPloppers(event.getEntityItem());
+	//	}
 }

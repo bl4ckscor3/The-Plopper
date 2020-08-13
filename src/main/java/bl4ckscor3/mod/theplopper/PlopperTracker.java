@@ -13,7 +13,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 
 /**
@@ -22,7 +21,7 @@ import net.minecraft.world.World;
  */
 public class PlopperTracker
 {
-	private static final Map<RegistryKey<DimensionType>,Collection<BlockPos>> trackedPloppers = new HashMap<>();
+	private static final Map<RegistryKey<World>,Collection<BlockPos>> trackedPloppers = new HashMap<>();
 
 	/**
 	 * Starts tracking a plopper
@@ -82,12 +81,12 @@ public class PlopperTracker
 	 */
 	private static Collection<BlockPos> getTrackedPloppers(World world)
 	{
-		Collection<BlockPos> ploppers = trackedPloppers.get(world.func_234922_V_());
+		Collection<BlockPos> ploppers = trackedPloppers.get(world.func_234923_W_());
 
 		if(ploppers == null)
 		{
 			ploppers = new HashSet<>();
-			trackedPloppers.put(world.func_234922_V_(), ploppers);
+			trackedPloppers.put(world.func_234923_W_(), ploppers);
 		}
 
 		return ploppers;
