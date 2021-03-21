@@ -1,28 +1,29 @@
 package bl4ckscor3.mod.theplopper.inventory;
 
+import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class PlopperItemHandler implements IItemHandlerModifiable
 {
-	private PlopperTileEntity tileEntity;
+	private PlopperTileEntity te;
 
-	public PlopperItemHandler(PlopperTileEntity te)
+	public PlopperItemHandler(PlopperTileEntity tile)
 	{
-		tileEntity = te;
+		te = tile;
 	}
 
 	@Override
 	public int getSlots()
 	{
-		return PlopperInventory.SLOTS;
+		return PlopperTileEntity.SLOTS;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int slot)
 	{
-		return tileEntity.getInventory().getStackInSlot(slot);
+		return te.getInventory().get(slot);
 	}
 
 	@Override
@@ -107,7 +108,7 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 	@Override
 	public void setStackInSlot(int slot, ItemStack stack)
 	{
-		tileEntity.getInventory().getContents().set(slot, stack);
+		te.getInventory().set(slot, stack);
 	}
 
 	/**
@@ -115,7 +116,7 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 	 */
 	public PlopperTileEntity getTileEntity()
 	{
-		return tileEntity;
+		return te;
 	}
 
 	/**
@@ -134,6 +135,6 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 	@Override
 	public boolean isItemValid(int slot, ItemStack stack)
 	{
-		return true;
+		return slot == 7 ? stack.getItem() == ThePlopper.rangeUpgrade : true;
 	}
 }

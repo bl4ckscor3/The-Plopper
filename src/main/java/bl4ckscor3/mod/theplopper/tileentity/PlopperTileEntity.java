@@ -5,7 +5,7 @@ import bl4ckscor3.mod.theplopper.PlopperTracker;
 import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.TickingPloppersHandler;
 import bl4ckscor3.mod.theplopper.container.PlopperContainer;
-import bl4ckscor3.mod.theplopper.inventory.PlopperInventory;
+import bl4ckscor3.mod.theplopper.inventory.PlopperItemHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,6 +20,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -33,8 +34,9 @@ import net.minecraftforge.items.IItemHandler;
 
 public class PlopperTileEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider
 {
-	private PlopperInventory inventory = new PlopperInventory(this);
-	private final LazyOptional<IItemHandler> inventoryHolder = LazyOptional.of(() -> inventory.getItemHandler());
+	public static final int SLOTS = 8;
+	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(SLOTS, ItemStack.EMPTY);
+	private LazyOptional<IItemHandler> inventoryHandler;
 	private boolean tracked = false;
 
 	public PlopperTileEntity()
@@ -52,9 +54,14 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 	{
 		ItemStack remainder = stack;
 
-		for(int i = 0; i < inventory.getContents().size() - 1; i++) //-1 so the last slot is not checked (the upgrade slot)
+		for(int i = 0; i < inventory.size() - 1; i++) //-1 so the last slot is not checked (the upgrade slot)
 		{
-			remainder = inventory.getItemHandler().insertItem(i, remainder, false);
+			IItemHandler itemHandler = getInventoryHandler().orElse(null);
+
+			if(itemHandler != null)
+				remainder = ((PlopperItemHandler)itemHandler).insertItem(i, remainder, false);
+			else
+				return false;
 
 			if(remainder.isEmpty())
 				break;
@@ -133,10 +140,10 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 	{
 		CompoundNBT invTag = (CompoundNBT)compound.get("PlopperInventory");
 
-		for(int i = 0; i < inventory.getContents().size(); i++)
+		for(int i = 0; i < inventory.size(); i++)
 		{
 			if(invTag != null && invTag.contains("Slot" + i))
-				inventory.setInventorySlotContents(i, ItemStack.read((CompoundNBT)invTag.get("Slot" + i)));
+				inventory.set(i, ItemStack.read((CompoundNBT)invTag.get("Slot" + i)));
 		}
 
 		super.read(state, compound);
@@ -147,9 +154,9 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 	{
 		CompoundNBT invTag = new CompoundNBT();
 
-		for(int i = 0; i < inventory.getContents().size(); i++)
+		for(int i = 0; i < inventory.size(); i++)
 		{
-			invTag.put("Slot" + i, inventory.getStackInSlot(i).write(new CompoundNBT()));
+			invTag.put("Slot" + i, inventory.get(i).write(new CompoundNBT()));
 		}
 
 		compound.put("PlopperInventory", invTag);
@@ -160,16 +167,8 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side)
 	{
 		if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get()))
-			return inventoryHolder.cast();
+			return inventoryHandler.cast();
 		else return super.getCapability(cap, side);
-	}
-
-	/**
-	 * @return This tile's inventory
-	 */
-	public PlopperInventory getInventory()
-	{
-		return inventory;
 	}
 
 	/**
@@ -178,7 +177,7 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 	public AxisAlignedBB getRange()
 	{
 		//slot 7 is the upgrade slot
-		int range = 2 + inventory.getStackInSlot(7).getCount() * 2;
+		int range = 2 + inventory.get(7).getCount() * 2;
 		int x = getPos().getX();
 		int y = getPos().getY();
 		int z = getPos().getZ();
@@ -188,12 +187,25 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 	@Override
 	public Container createMenu(int windowId, PlayerInventory playerInv, PlayerEntity player)
 	{
-		return new PlopperContainer(windowId, playerInv, inventory);
+		return new PlopperContainer(windowId, playerInv, this);
 	}
 
 	@Override
 	public ITextComponent getDisplayName()
 	{
 		return new TranslationTextComponent(ThePlopper.thePlopper.getTranslationKey());
+	}
+
+	public NonNullList<ItemStack> getInventory()
+	{
+		return inventory;
+	}
+
+	public LazyOptional<IItemHandler> getInventoryHandler()
+	{
+		if(inventoryHandler == null)
+			inventoryHandler = LazyOptional.of(() -> new PlopperItemHandler(PlopperTileEntity.this));
+
+		return inventoryHandler;
 	}
 }
