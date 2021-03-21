@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
@@ -81,6 +82,20 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 		TileEntity te = world.getTileEntity(pos);
 
 		return te instanceof PlopperTileEntity ? (INamedContainerProvider)te : null;
+	}
+
+	@Override
+	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
+	{
+		if(state.getBlock() != newState.getBlock())
+		{
+			TileEntity te = world.getTileEntity(pos);
+
+			if(te instanceof PlopperTileEntity)
+				InventoryHelper.dropItems(world, pos, ((PlopperTileEntity)te).getInventory());
+		}
+
+		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 
 	@Override
