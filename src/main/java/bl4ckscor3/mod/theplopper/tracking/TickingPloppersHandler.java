@@ -1,9 +1,10 @@
-package bl4ckscor3.mod.theplopper;
+package bl4ckscor3.mod.theplopper.tracking;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
+import bl4ckscor3.mod.theplopper.ThePlopper;
+import bl4ckscor3.mod.theplopper.plopper.PlopperTileEntity;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

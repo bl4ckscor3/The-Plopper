@@ -1,11 +1,9 @@
-package bl4ckscor3.mod.theplopper.tileentity;
+package bl4ckscor3.mod.theplopper.plopper;
 
 import bl4ckscor3.mod.theplopper.Configuration;
-import bl4ckscor3.mod.theplopper.PlopperTracker;
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import bl4ckscor3.mod.theplopper.TickingPloppersHandler;
-import bl4ckscor3.mod.theplopper.container.PlopperContainer;
-import bl4ckscor3.mod.theplopper.inventory.PlopperItemHandler;
+import bl4ckscor3.mod.theplopper.tracking.PlopperTracker;
+import bl4ckscor3.mod.theplopper.tracking.TickingPloppersHandler;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

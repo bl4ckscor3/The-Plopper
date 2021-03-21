@@ -1,9 +1,8 @@
-package bl4ckscor3.mod.theplopper.block;
+package bl4ckscor3.mod.theplopper.plopper;
 
 import java.util.List;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;

@@ -1,8 +1,9 @@
 package bl4ckscor3.mod.theplopper;
 
-import bl4ckscor3.mod.theplopper.block.PlopperBlock;
-import bl4ckscor3.mod.theplopper.container.PlopperContainer;
-import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
+import bl4ckscor3.mod.theplopper.plopper.PlopperBlock;
+import bl4ckscor3.mod.theplopper.plopper.PlopperContainer;
+import bl4ckscor3.mod.theplopper.plopper.PlopperTileEntity;
+import bl4ckscor3.mod.theplopper.tracking.PlopperTracker;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.container.ContainerType;
