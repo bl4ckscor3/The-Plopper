@@ -46,6 +46,7 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 	public static final String NAME = "plopper";
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	private static final Style GRAY_STYLE = Style.EMPTY.applyFormatting(TextFormatting.GRAY);
+	private static final VoxelShape SHAPE = VoxelShapes.or(VoxelShapes.or(VoxelShapes.or(VoxelShapes.or(Block.makeCuboidShape(2, 0, 2, 14, 1, 14), Block.makeCuboidShape(7, 1, 7, 9, 2, 9)), Block.makeCuboidShape(6, 2, 6, 10, 3, 10)), Block.makeCuboidShape(5, 3, 5, 11, 4, 11)), Block.makeCuboidShape(4, 4, 4, 12, 5, 12));
 
 	public PlopperBlock()
 	{
@@ -58,13 +59,7 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext ctx)
 	{
-		VoxelShape base = Block.makeCuboidShape(2, 0, 2, 14, 1, 14);
-		VoxelShape hopper1 = Block.makeCuboidShape(7, 1, 7, 9, 2, 9);
-		VoxelShape hopper2 = Block.makeCuboidShape(6, 2, 6, 10, 3, 10);
-		VoxelShape hopper3 = Block.makeCuboidShape(5, 3, 5, 11, 4, 11);
-		VoxelShape hopper4 = Block.makeCuboidShape(4, 4, 4, 12, 5, 12);
-
-		return VoxelShapes.or(VoxelShapes.or(VoxelShapes.or(VoxelShapes.or(base, hopper1), hopper2), hopper3), hopper4); //mojang, why no varargs? :c
+		return SHAPE;
 	}
 
 	@Override
