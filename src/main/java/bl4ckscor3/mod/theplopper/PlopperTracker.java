@@ -81,12 +81,12 @@ public class PlopperTracker
 	 */
 	private static Collection<BlockPos> getTrackedPloppers(World world)
 	{
-		Collection<BlockPos> ploppers = trackedPloppers.get(world.func_234923_W_());
+		Collection<BlockPos> ploppers = trackedPloppers.get(world.getDimensionKey());
 
 		if(ploppers == null)
 		{
 			ploppers = new HashSet<>();
-			trackedPloppers.put(world.func_234923_W_(), ploppers);
+			trackedPloppers.put(world.getDimensionKey(), ploppers);
 		}
 
 		return ploppers;

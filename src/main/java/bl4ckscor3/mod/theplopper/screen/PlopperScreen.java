@@ -28,7 +28,7 @@ public class PlopperScreen extends ContainerScreen<PlopperContainer>
 	{
 		super.render(matrix, mouseX, mouseY, partialTicks);
 
-		func_230459_a_(matrix, mouseX, mouseY);
+		renderHoveredTooltip(matrix, mouseX, mouseY);
 	}
 
 	@Override
