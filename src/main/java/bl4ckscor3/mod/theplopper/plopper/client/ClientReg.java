@@ -1,6 +1,6 @@
-package bl4ckscor3.mod.theplopper;
+package bl4ckscor3.mod.theplopper.plopper.client;
 
-import bl4ckscor3.mod.theplopper.screen.PlopperScreen;
+import bl4ckscor3.mod.theplopper.ThePlopper;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -1,4 +1,4 @@
-package bl4ckscor3.mod.theplopper;
+package bl4ckscor3.mod.theplopper.tracking;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
+import bl4ckscor3.mod.theplopper.block.PlopperTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.AxisAlignedBB;

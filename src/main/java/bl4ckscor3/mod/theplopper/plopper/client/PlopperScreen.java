@@ -1,9 +1,9 @@
-package bl4ckscor3.mod.theplopper.screen;
+package bl4ckscor3.mod.theplopper.plopper.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import bl4ckscor3.mod.theplopper.container.PlopperContainer;
+import bl4ckscor3.mod.theplopper.block.PlopperContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;

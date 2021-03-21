@@ -1,7 +1,6 @@
-package bl4ckscor3.mod.theplopper.inventory;
+package bl4ckscor3.mod.theplopper.block;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
