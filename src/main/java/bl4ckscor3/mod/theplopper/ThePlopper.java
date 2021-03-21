@@ -2,11 +2,9 @@ package bl4ckscor3.mod.theplopper;
 
 import bl4ckscor3.mod.theplopper.block.PlopperBlock;
 import bl4ckscor3.mod.theplopper.container.PlopperContainer;
-import bl4ckscor3.mod.theplopper.inventory.PlopperInventory;
 import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -17,6 +15,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -72,9 +71,7 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event)
 	{
-		event.getRegistry().register(new ContainerType<PlopperContainer>((windowId, playerInv) -> {
-			return new PlopperContainer(windowId, playerInv, new Inventory(PlopperInventory.SLOTS));
-		}).setRegistryName(thePlopper.getRegistryName()));
+		event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, data) -> new PlopperContainer(windowId, playerInv, playerInv.player.world.getTileEntity(data.readBlockPos()))).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	public void onItemExpire(ItemExpireEvent event)
@@ -105,7 +102,7 @@ public class ThePlopper
 
 		if(te instanceof PlopperTileEntity && event.getWorld() instanceof World)
 		{
-			for(ItemStack stack : ((PlopperTileEntity)te).getInventory().getContents())
+			for(ItemStack stack : ((PlopperTileEntity)te).getInventory())
 			{
 				Block.spawnAsEntity((World)event.getWorld(), event.getPos(), stack);
 			}

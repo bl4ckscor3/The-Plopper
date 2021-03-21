@@ -1,19 +1,21 @@
 package bl4ckscor3.mod.theplopper.container;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import bl4ckscor3.mod.theplopper.inventory.ItemValidatorSlot;
+import bl4ckscor3.mod.theplopper.tileentity.PlopperTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class PlopperContainer extends Container
 {
-	public PlopperContainer(int windowId, PlayerInventory playerInv, IInventory plopperInv)
+	public PlopperContainer(int windowId, PlayerInventory playerInv, TileEntity tile)
 	{
 		super(ThePlopper.cTypePlopper, windowId);
+
 		//player inventory
 		for(int i = 0; i < 3; i++)
 		{
@@ -29,14 +31,19 @@ public class PlopperContainer extends Container
 			addSlot(new Slot(playerInv, i, 8 + i * 18, 109));
 		}
 
-		//plopper inventory
-		for(int i = 0; i < 7; i++)
+		if(tile instanceof PlopperTileEntity)
 		{
-			addSlot(new ItemValidatorSlot(plopperInv, i, 26 + i * 18, 20, stack -> false));
-		}
+			((PlopperTileEntity)tile).getInventoryHandler().ifPresent(itemHandler -> {
+				//plopper inventory
+				for(int i = 0; i < 7; i++)
+				{
+					addSlot(new SlotItemHandler(itemHandler, i, 26 + i * 18, 20));
+				}
 
-		//upgrade slot
-		addSlot(new ItemValidatorSlot(plopperInv, 7, 177, 7, stack -> stack.getItem() == ThePlopper.rangeUpgrade));
+				//upgrade slot
+				addSlot(new SlotItemHandler(itemHandler, 7, 177, 7));
+			});
+		}
 	}
 
 	@Override

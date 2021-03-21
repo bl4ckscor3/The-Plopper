@@ -14,6 +14,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -38,6 +39,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 {
@@ -72,7 +74,7 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 			INamedContainerProvider containerProvider = getContainer(state, world, pos);
 
 			if(containerProvider != null)
-				player.openContainer(containerProvider);
+				NetworkHooks.openGui((ServerPlayerEntity)player, containerProvider, pos);
 		}
 
 		return ActionResultType.SUCCESS;
