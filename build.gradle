@@ -11,14 +11,14 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = '1.15.1-v1.3.1'
+version = 'v1.3.1'
 group = 'bl4ckscor3.mod.theplopper'
-archivesBaseName = 'theplopper'
+archivesBaseName = 'theplopper-1.15.2'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200515-1.15.1'
+    mappings channel: 'snapshot', version: '20210320-1.15.1'
 	
     runs {
         client {
@@ -45,18 +45,32 @@ minecraft {
     }
 }
 
-
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.2.31'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.49'
+}
+
+processResources {  
+	//replace ${version} in mods.toml
+	inputs.property 'version', project.version
+
+	from(sourceSets.main.resources.srcDirs) {
+		include 'META-INF/mods.toml'
+
+		expand 'version': project.version
+	}
+
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'META-INF/mods.toml'
+	}
 }
 
 jar {
     manifest {
         attributes(["Specification-Title": "The Plopper",
                     "Specification-Vendor": "bl4ckscor3",
-                    "Specification-Version": "v1.3.1",
+                    "Specification-Version": "${version}",
                     "Implementation-Title": "The Plopper",
-                    "Implementation-Version": "v1.3.1",
+                    "Implementation-Version": "${version}",
                     "Implementation-Vendor" :"bl4ckscor3",
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
     }
