@@ -9,16 +9,12 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -45,7 +41,6 @@ public class ThePlopper
 	{
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.CONFIG_SPEC);
 		MinecraftForge.EVENT_BUS.addListener(this::onItemExpire);
-		MinecraftForge.EVENT_BUS.addListener(this::onBlockBreak);
 		//		MinecraftForge.EVENT_BUS.addListener(this::onItemToss);
 	}
 
@@ -93,19 +88,6 @@ public class ThePlopper
 			//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
 			if(plopper.suckUp(ei, ei.getItem()))
 				return;
-		}
-	}
-
-	public void onBlockBreak(BlockEvent.BreakEvent event)
-	{
-		TileEntity te = event.getWorld().getTileEntity(event.getPos());
-
-		if(te instanceof PlopperTileEntity && event.getWorld() instanceof World)
-		{
-			for(ItemStack stack : ((PlopperTileEntity)te).getInventory())
-			{
-				Block.spawnAsEntity((World)event.getWorld(), event.getPos(), stack);
-			}
 		}
 	}
 
