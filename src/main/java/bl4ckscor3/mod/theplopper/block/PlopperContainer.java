@@ -32,16 +32,21 @@ public class PlopperContainer extends Container
 
 		if(tile instanceof PlopperTileEntity)
 		{
-			((PlopperTileEntity)tile).getInventoryHandler().ifPresent(itemHandler -> {
-				//plopper inventory
+			//plopper inventory
+			((PlopperTileEntity)tile).getExtractOnlyInventoryHandler().ifPresent(itemHandler -> {
 				for(int i = 0; i < 7; i++)
 				{
-					addSlot(new SlotItemHandler(itemHandler, i, 26 + i * 18, 20));
+					addSlot(new SlotItemHandler(itemHandler, i, 26 + i * 18, 20) {
+						@Override
+						public boolean isItemValid(ItemStack stack)
+						{
+							return false;
+						}
+					});
 				}
-
-				//upgrade slot
-				addSlot(new SlotItemHandler(itemHandler, 7, 177, 7));
 			});
+			//upgrade slot
+			((PlopperTileEntity)tile).getUpgradeHandler().ifPresent(itemHandler -> addSlot(new SlotItemHandler(itemHandler, 0, 177, 7)));
 		}
 	}
 

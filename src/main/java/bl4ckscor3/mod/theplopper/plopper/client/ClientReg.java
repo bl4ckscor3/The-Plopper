@@ -14,6 +14,6 @@ public class ClientReg
 	@SubscribeEvent
 	public static void onFMLClientSetup(FMLClientSetupEvent event)
 	{
-		ScreenManager.registerFactory(ThePlopper.cTypePlopper, PlopperScreen::new);
+		event.enqueueWork(() -> ScreenManager.registerFactory(ThePlopper.cTypePlopper, PlopperScreen::new));
 	}
 }

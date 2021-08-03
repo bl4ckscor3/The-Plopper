@@ -92,7 +92,10 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 			TileEntity te = world.getTileEntity(pos);
 
 			if(te instanceof PlopperTileEntity)
+			{
 				InventoryHelper.dropItems(world, pos, ((PlopperTileEntity)te).getInventory());
+				InventoryHelper.dropItems(world, pos, ((PlopperTileEntity)te).getUpgrade());
+			}
 		}
 
 		super.onReplaced(state, world, pos, newState, isMoving);
