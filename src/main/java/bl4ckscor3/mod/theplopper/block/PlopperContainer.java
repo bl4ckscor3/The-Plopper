@@ -1,8 +1,8 @@
 package bl4ckscor3.mod.theplopper.block;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -30,18 +30,23 @@ public class PlopperContainer extends AbstractContainerMenu
 			addSlot(new Slot(playerInv, i, 8 + i * 18, 109));
 		}
 
-		if(tile instanceof PlopperTileEntity)
+		if(tile instanceof PlopperTileEntity te)
 		{
-			((PlopperTileEntity)tile).getInventoryHandler().ifPresent(itemHandler -> {
-				//plopper inventory
+			//plopper inventory
+			te.getExtractOnlyInventoryHandler().ifPresent(itemHandler -> {
 				for(int i = 0; i < 7; i++)
 				{
-					addSlot(new SlotItemHandler(itemHandler, i, 26 + i * 18, 20));
+					addSlot(new SlotItemHandler(itemHandler, i, 26 + i * 18, 20) {
+						@Override
+						public boolean mayPlace(ItemStack stack)
+						{
+							return false;
+						}
+					});
 				}
-
-				//upgrade slot
-				addSlot(new SlotItemHandler(itemHandler, 7, 177, 7));
 			});
+			//upgrade slot
+			te.getUpgradeHandler().ifPresent(itemHandler -> addSlot(new SlotItemHandler(itemHandler, 0, 177, 7)));
 		}
 	}
 

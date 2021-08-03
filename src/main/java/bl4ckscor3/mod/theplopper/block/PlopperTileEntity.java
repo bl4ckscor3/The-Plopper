@@ -3,43 +3,47 @@ package bl4ckscor3.mod.theplopper.block;
 import bl4ckscor3.mod.theplopper.Configuration;
 import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.tracking.PlopperTracker;
-import bl4ckscor3.mod.theplopper.tracking.TickingPloppersHandler;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
-public class PlopperTileEntity extends BlockEntity implements TickableBlockEntity, MenuProvider
+public class PlopperTileEntity extends BlockEntity implements MenuProvider
 {
-	public static final int SLOTS = 8;
-	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(SLOTS, ItemStack.EMPTY);
+	public static final int SLOTS = 7;
+	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(7, ItemStack.EMPTY);
+	private NonNullList<ItemStack> upgrade = NonNullList.<ItemStack>withSize(1, ItemStack.EMPTY);
 	private LazyOptional<IItemHandler> inventoryHandler;
+	private LazyOptional<IItemHandler> extractOnlyInventoryHandler;
+	private LazyOptional<IItemHandler> upgradeHandler;
 	private boolean tracked = false;
 
-	public PlopperTileEntity()
+	public PlopperTileEntity(BlockPos pos, BlockState state)
 	{
-		super(ThePlopper.teTypePlopper);
+		super(ThePlopper.teTypePlopper, pos, state);
 	}
 
 	/**
@@ -52,12 +56,12 @@ public class PlopperTileEntity extends BlockEntity implements TickableBlockEntit
 	{
 		ItemStack remainder = stack;
 
-		for(int i = 0; i < inventory.size() - 1; i++) //-1 so the last slot is not checked (the upgrade slot)
+		for(int i = 0; i < inventory.size(); i++)
 		{
 			IItemHandler itemHandler = getInventoryHandler().orElse(null);
 
 			if(itemHandler != null)
-				remainder = ((PlopperItemHandler)itemHandler).insertItem(i, remainder, false);
+				remainder = itemHandler.insertItem(i, remainder, false);
 			else
 				return false;
 
@@ -75,12 +79,12 @@ public class PlopperTileEntity extends BlockEntity implements TickableBlockEntit
 		{
 			ItemEntity newIe = new ItemEntity(ie.getCommandSenderWorld(), ie.getX(), ie.getY(), ie.getZ(), remainder);
 
-			ie.remove();
+			ie.discard();
 			newIe.setDeltaMovement(0.0D, 0.0D, 0.0D);
 			newIe.getCommandSenderWorld().addFreshEntity(newIe);
 		}
 		else
-			ie.remove();
+			ie.discard();
 
 		if(!level.isClientSide && Configuration.CONFIG.displayParticles.get())
 		{
@@ -95,14 +99,12 @@ public class PlopperTileEntity extends BlockEntity implements TickableBlockEntit
 		return true;
 	}
 
-	@Override
-	public void tick()
+	public static void tick(Level level, BlockPos pos, BlockState state, PlopperTileEntity te)
 	{
-		if(!tracked)
+		if(!te.tracked)
 		{
-			PlopperTracker.track(this);
-			TickingPloppersHandler.stopTicking(this);
-			tracked = true;
+			PlopperTracker.track(te);
+			te.tracked = true;
 		}
 	}
 
@@ -130,11 +132,11 @@ public class PlopperTileEntity extends BlockEntity implements TickableBlockEntit
 	@Override
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
 	{
-		load(getBlockState(), pkt.getTag());
+		load(pkt.getTag());
 	}
 
 	@Override
-	public void load(BlockState state, CompoundTag compound)
+	public void load(CompoundTag compound)
 	{
 		CompoundTag invTag = (CompoundTag)compound.get("PlopperInventory");
 
@@ -144,7 +146,8 @@ public class PlopperTileEntity extends BlockEntity implements TickableBlockEntit
 				inventory.set(i, ItemStack.of((CompoundTag)invTag.get("Slot" + i)));
 		}
 
-		super.load(state, compound);
+		upgrade.set(0, ItemStack.of((CompoundTag)invTag.get("Slot7")));
+		super.load(compound);
 	}
 
 	@Override
@@ -157,6 +160,7 @@ public class PlopperTileEntity extends BlockEntity implements TickableBlockEntit
 			invTag.put("Slot" + i, inventory.get(i).save(new CompoundTag()));
 		}
 
+		invTag.put("Slot7", upgrade.get(0).save(new CompoundTag()));
 		compound.put("PlopperInventory", invTag);
 		return super.save(compound);
 	}
@@ -165,7 +169,7 @@ public class PlopperTileEntity extends BlockEntity implements TickableBlockEntit
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side)
 	{
 		if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get()))
-			return inventoryHandler.cast();
+			return getExtractOnlyInventoryHandler().cast();
 		else return super.getCapability(cap, side);
 	}
 
@@ -174,8 +178,7 @@ public class PlopperTileEntity extends BlockEntity implements TickableBlockEntit
 	 */
 	public AABB getRange()
 	{
-		//slot 7 is the upgrade slot
-		int range = 2 + inventory.get(7).getCount() * 2;
+		int range = 2 + upgrade.get(0).getCount() * 2;
 		int x = getBlockPos().getX();
 		int y = getBlockPos().getY();
 		int z = getBlockPos().getZ();
@@ -199,11 +202,40 @@ public class PlopperTileEntity extends BlockEntity implements TickableBlockEntit
 		return inventory;
 	}
 
+	public NonNullList<ItemStack> getUpgrade()
+	{
+		return upgrade;
+	}
+
 	public LazyOptional<IItemHandler> getInventoryHandler()
 	{
 		if(inventoryHandler == null)
-			inventoryHandler = LazyOptional.of(() -> new PlopperItemHandler(PlopperTileEntity.this));
+			inventoryHandler = LazyOptional.of(() -> new ItemStackHandler(inventory));
 
 		return inventoryHandler;
+	}
+
+	public LazyOptional<IItemHandler> getExtractOnlyInventoryHandler()
+	{
+		if(extractOnlyInventoryHandler == null)
+			extractOnlyInventoryHandler = LazyOptional.of(() -> new ExtractOnlyItemStackHandler(inventory));
+
+		return extractOnlyInventoryHandler;
+	}
+
+	public LazyOptional<IItemHandler> getUpgradeHandler()
+	{
+		if(upgradeHandler == null)
+		{
+			upgradeHandler = LazyOptional.of(() -> new ItemStackHandler(upgrade) {
+				@Override
+				public int getSlotLimit(int slot)
+				{
+					return 7;
+				}
+			});
+		}
+
+		return upgradeHandler;
 	}
 }

@@ -14,6 +14,6 @@ public class ClientReg
 	@SubscribeEvent
 	public static void onFMLClientSetup(FMLClientSetupEvent event)
 	{
-		MenuScreens.register(ThePlopper.cTypePlopper, PlopperScreen::new);
+		event.enqueueWork(() -> MenuScreens.register(ThePlopper.cTypePlopper, PlopperScreen::new));
 	}
 }

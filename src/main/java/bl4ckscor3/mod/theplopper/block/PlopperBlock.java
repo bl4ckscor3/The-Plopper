@@ -3,43 +3,45 @@ package bl4ckscor3.mod.theplopper.block;
 import java.util.List;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.Containers;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBlock
 {
@@ -79,9 +81,7 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	@Override
 	public MenuProvider getMenuProvider(BlockState state, Level world, BlockPos pos)
 	{
-		BlockEntity te = world.getBlockEntity(pos);
-
-		return te instanceof PlopperTileEntity ? (MenuProvider)te : null;
+		return world.getBlockEntity(pos) instanceof PlopperTileEntity te ? te : null;
 	}
 
 	@Override
@@ -89,10 +89,11 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	{
 		if(state.getBlock() != newState.getBlock())
 		{
-			BlockEntity te = world.getBlockEntity(pos);
-
-			if(te instanceof PlopperTileEntity)
-				Containers.dropContents(world, pos, ((PlopperTileEntity)te).getInventory());
+			if(world.getBlockEntity(pos) instanceof PlopperTileEntity te)
+			{
+				Containers.dropContents(world, pos, te.getInventory());
+				Containers.dropContents(world, pos, te.getUpgrade());
+			}
 		}
 
 		super.onRemove(state, world, pos, newState, isMoving);
@@ -138,8 +139,14 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	}
 
 	@Override
-	public BlockEntity newBlockEntity(BlockGetter world)
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 	{
-		return new PlopperTileEntity();
+		return new PlopperTileEntity(pos, state);
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
+	{
+		return createTickerHelper(type, ThePlopper.teTypePlopper, PlopperTileEntity::tick);
 	}
 }
