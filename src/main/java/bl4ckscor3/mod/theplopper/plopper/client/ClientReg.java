@@ -1,7 +1,7 @@
 package bl4ckscor3.mod.theplopper.plopper.client;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -14,6 +14,6 @@ public class ClientReg
 	@SubscribeEvent
 	public static void onFMLClientSetup(FMLClientSetupEvent event)
 	{
-		ScreenManager.register(ThePlopper.cTypePlopper, PlopperScreen::new);
+		MenuScreens.register(ThePlopper.cTypePlopper, PlopperScreen::new);
 	}
 }

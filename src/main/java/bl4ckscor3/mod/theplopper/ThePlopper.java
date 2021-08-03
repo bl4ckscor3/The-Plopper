@@ -4,14 +4,14 @@ import bl4ckscor3.mod.theplopper.block.PlopperBlock;
 import bl4ckscor3.mod.theplopper.block.PlopperContainer;
 import bl4ckscor3.mod.theplopper.block.PlopperTileEntity;
 import bl4ckscor3.mod.theplopper.tracking.PlopperTracker;
-import net.minecraft.block.Block;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
@@ -34,9 +34,9 @@ public class ThePlopper
 	@ObjectHolder(MOD_ID + ":range_upgrade")
 	public static Item rangeUpgrade;
 	@ObjectHolder(MOD_ID + ":plopper")
-	public static TileEntityType<PlopperTileEntity> teTypePlopper;
+	public static BlockEntityType<PlopperTileEntity> teTypePlopper;
 	@ObjectHolder(MOD_ID + ":plopper")
-	public static ContainerType<PlopperContainer> cTypePlopper;
+	public static MenuType<PlopperContainer> cTypePlopper;
 
 	public ThePlopper()
 	{
@@ -52,20 +52,20 @@ public class ThePlopper
 	}
 
 	@SubscribeEvent
-	public static void registerTileEntityTypes(RegistryEvent.Register<TileEntityType<?>> event)
+	public static void registerTileEntityTypes(RegistryEvent.Register<BlockEntityType<?>> event)
 	{
-		event.getRegistry().register(TileEntityType.Builder.of(PlopperTileEntity::new, thePlopper).build(null).setRegistryName(thePlopper.getRegistryName()));
+		event.getRegistry().register(BlockEntityType.Builder.of(PlopperTileEntity::new, thePlopper).build(null).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
-		event.getRegistry().register(new Item(new Item.Properties().tab(ItemGroup.TAB_REDSTONE).stacksTo(7)).setRegistryName(new ResourceLocation(MOD_ID, "range_upgrade")));
-		event.getRegistry().register(new BlockItem(thePlopper, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)).setRegistryName(thePlopper.getRegistryName()));
+		event.getRegistry().register(new Item(new Item.Properties().tab(CreativeModeTab.TAB_REDSTONE).stacksTo(7)).setRegistryName(new ResourceLocation(MOD_ID, "range_upgrade")));
+		event.getRegistry().register(new BlockItem(thePlopper, new Item.Properties().tab(CreativeModeTab.TAB_REDSTONE)).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	@SubscribeEvent
-	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event)
+	public static void registerContainerTypes(RegistryEvent.Register<MenuType<?>> event)
 	{
 		event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, data) -> new PlopperContainer(windowId, playerInv, playerInv.player.level.getBlockEntity(data.readBlockPos()))).setRegistryName(thePlopper.getRegistryName()));
 	}

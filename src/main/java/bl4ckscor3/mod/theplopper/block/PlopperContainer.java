@@ -1,17 +1,17 @@
 package bl4ckscor3.mod.theplopper.block;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class PlopperContainer extends Container
+public class PlopperContainer extends AbstractContainerMenu
 {
-	public PlopperContainer(int windowId, PlayerInventory playerInv, TileEntity tile)
+	public PlopperContainer(int windowId, Inventory playerInv, BlockEntity tile)
 	{
 		super(ThePlopper.cTypePlopper, windowId);
 
@@ -46,7 +46,7 @@ public class PlopperContainer extends Container
 	}
 
 	@Override
-	public ItemStack quickMoveStack(PlayerEntity player, int index) //basically the chest code, but modified a bit to e.g. include custom slots
+	public ItemStack quickMoveStack(Player player, int index) //basically the chest code, but modified a bit to e.g. include custom slots
 	{
 		ItemStack copy = ItemStack.EMPTY;
 		Slot slot = slots.get(index);
@@ -89,7 +89,7 @@ public class PlopperContainer extends Container
 	}
 
 	@Override
-	public boolean stillValid(PlayerEntity player)
+	public boolean stillValid(Player player)
 	{
 		return true;
 	}

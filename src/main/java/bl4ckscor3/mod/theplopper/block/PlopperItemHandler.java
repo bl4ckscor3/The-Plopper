@@ -1,7 +1,7 @@
 package bl4ckscor3.mod.theplopper.block;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class PlopperItemHandler implements IItemHandlerModifiable

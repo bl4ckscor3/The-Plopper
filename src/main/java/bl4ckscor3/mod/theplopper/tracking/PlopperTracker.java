@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import bl4ckscor3.mod.theplopper.block.PlopperTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 /**
  * Tracks all exisiting ploppers so searching for them each time an item expires is obsolete.
@@ -21,7 +21,7 @@ import net.minecraft.world.World;
  */
 public class PlopperTracker
 {
-	private static final Map<RegistryKey<World>,Collection<BlockPos>> trackedPloppers = new HashMap<>();
+	private static final Map<ResourceKey<Level>,Collection<BlockPos>> trackedPloppers = new HashMap<>();
 
 	/**
 	 * Starts tracking a plopper
@@ -47,7 +47,7 @@ public class PlopperTracker
 	 * @param pos The block position
 	 * @return A list of all ploppers that have the given block position in their range
 	 */
-	public static List<PlopperTileEntity> getPloppersInRange(World world, BlockPos pos)
+	public static List<PlopperTileEntity> getPloppersInRange(Level world, BlockPos pos)
 	{
 		final Collection<BlockPos> ploppers = getTrackedPloppers(world);
 		List<PlopperTileEntity> returnValue = new ArrayList<>();
@@ -58,7 +58,7 @@ public class PlopperTracker
 
 			if(plopperPos != null)
 			{
-				TileEntity potentialPlopper = world.getBlockEntity(plopperPos);
+				BlockEntity potentialPlopper = world.getBlockEntity(plopperPos);
 
 				if(potentialPlopper instanceof PlopperTileEntity)
 				{
@@ -79,7 +79,7 @@ public class PlopperTracker
 	 * Gets all block positions at which a plopper is being tracked for the given world
 	 * @param world The world to get the tracked ploppers of
 	 */
-	private static Collection<BlockPos> getTrackedPloppers(World world)
+	private static Collection<BlockPos> getTrackedPloppers(Level world)
 	{
 		Collection<BlockPos> ploppers = trackedPloppers.get(world.dimension());
 
@@ -99,7 +99,7 @@ public class PlopperTracker
 	 */
 	private static boolean canPlopperReach(PlopperTileEntity te, BlockPos pos)
 	{
-		AxisAlignedBB plopperRange = te.getRange();
+		AABB plopperRange = te.getRange();
 
 		return plopperRange.minX <= pos.getX() && plopperRange.minY <= pos.getY() && plopperRange.minZ <= pos.getZ() && plopperRange.maxX >= pos.getX() && plopperRange.maxY >= pos.getY() && plopperRange.maxZ >= pos.getZ();
 	}
