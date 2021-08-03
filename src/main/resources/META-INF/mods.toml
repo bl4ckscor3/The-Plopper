@@ -1,26 +1,26 @@
-modLoader="javafml" #mandatory
-loaderVersion="[33,)" #mandatory
-license="GNU GPL v3.0 https://github.com/bl4ckscor3/The-Plopper/blob/1.16/LICENSE.md"
+modLoader="javafml"
+loaderVersion="[37,)"
+license="GNU GPL v3.0 https://github.com/bl4ckscor3/The-Plopper/blob/1.17/LICENSE.md"
+issueTrackerURL="https://github.com/bl4ckscor3/The-Plopper/issues"
 
-[[mods]] #mandatory
-	modId="theplopper" #mandatory
-	version="${version}" #mandatory
-	displayName="The Plopper" #mandatory
-	description='''A block that picks up items that are about to despawn.''' #mandatory
-	issueTrackerURL="https://github.com/bl4ckscor3/The-Plopper/issues"
+[[mods]]
+	modId="theplopper"
+	version="${file.jarVersion}"
+	displayName="The Plopper"
+	description='''A block that picks up items that are about to despawn.'''
 	displayURL="https://curseforge.com/minecraft/mc-mods/the-plopper"
 	authors="bl4ckscor3"
 
 [[dependencies.theplopper]]
     modId="forge"
     mandatory=true
-    versionRange="[33,)"
+    versionRange="[37,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.theplopper]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16,1.17)"
+    versionRange="[1.17,1.18)"
     ordering="NONE"
     side="BOTH"
