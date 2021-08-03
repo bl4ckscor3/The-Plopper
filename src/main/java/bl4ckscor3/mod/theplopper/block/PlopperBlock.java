@@ -45,15 +45,15 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 {
 	public static final String NAME = "plopper";
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	private static final Style GRAY_STYLE = Style.EMPTY.applyFormatting(TextFormatting.GRAY);
-	private static final VoxelShape SHAPE = VoxelShapes.or(VoxelShapes.or(VoxelShapes.or(VoxelShapes.or(Block.makeCuboidShape(2, 0, 2, 14, 1, 14), Block.makeCuboidShape(7, 1, 7, 9, 2, 9)), Block.makeCuboidShape(6, 2, 6, 10, 3, 10)), Block.makeCuboidShape(5, 3, 5, 11, 4, 11)), Block.makeCuboidShape(4, 4, 4, 12, 5, 12));
+	private static final Style GRAY_STYLE = Style.EMPTY.applyFormat(TextFormatting.GRAY);
+	private static final VoxelShape SHAPE = VoxelShapes.or(VoxelShapes.or(VoxelShapes.or(VoxelShapes.or(Block.box(2, 0, 2, 14, 1, 14), Block.box(7, 1, 7, 9, 2, 9)), Block.box(6, 2, 6, 10, 3, 10)), Block.box(5, 3, 5, 11, 4, 11)), Block.box(4, 4, 4, 12, 5, 12));
 
 	public PlopperBlock()
 	{
-		super(Block.Properties.create(Material.IRON, MaterialColor.STONE).hardnessAndResistance(3.0F, 8.0F).sound(SoundType.METAL).setOpaque((state, world, pos) -> false));
+		super(Block.Properties.of(Material.METAL, MaterialColor.STONE).strength(3.0F, 8.0F).sound(SoundType.METAL).isRedstoneConductor((state, world, pos) -> false));
 
 		setRegistryName(ThePlopper.MOD_ID + ":" + NAME);
-		setDefaultState(stateContainer.getBaseState().with(WATERLOGGED, false));
+		registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false));
 	}
 
 	@Override
@@ -63,11 +63,11 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
 	{
-		if(!world.isRemote)
+		if(!world.isClientSide)
 		{
-			INamedContainerProvider containerProvider = getContainer(state, world, pos);
+			INamedContainerProvider containerProvider = getMenuProvider(state, world, pos);
 
 			if(containerProvider != null)
 				NetworkHooks.openGui((ServerPlayerEntity)player, containerProvider, pos);
@@ -77,29 +77,29 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 	}
 
 	@Override
-	public INamedContainerProvider getContainer(BlockState state, World world, BlockPos pos)
+	public INamedContainerProvider getMenuProvider(BlockState state, World world, BlockPos pos)
 	{
-		TileEntity te = world.getTileEntity(pos);
+		TileEntity te = world.getBlockEntity(pos);
 
 		return te instanceof PlopperTileEntity ? (INamedContainerProvider)te : null;
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
+	public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		if(state.getBlock() != newState.getBlock())
 		{
-			TileEntity te = world.getTileEntity(pos);
+			TileEntity te = world.getBlockEntity(pos);
 
 			if(te instanceof PlopperTileEntity)
-				InventoryHelper.dropItems(world, pos, ((PlopperTileEntity)te).getInventory());
+				InventoryHelper.dropContents(world, pos, ((PlopperTileEntity)te).getInventory());
 		}
 
-		super.onReplaced(state, world, pos, newState, isMoving);
+		super.onRemove(state, world, pos, newState, isMoving);
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
 		tooltip.add(new TranslationTextComponent("theplopper:plopper.tooltip").setStyle(GRAY_STYLE));
 	}
@@ -107,38 +107,38 @@ public class PlopperBlock extends ContainerBlock implements IWaterLoggable
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context)
 	{
-		return getDefaultState().with(WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
+		return defaultBlockState().setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos)
+	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos)
 	{
-		if(state.get(WATERLOGGED))
-			world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+		if(state.getValue(WATERLOGGED))
+			world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 
-		return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
 	}
 
 	@Override
 	public FluidState getFluidState(BlockState state)
 	{
-		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
 		builder.add(WATERLOGGED);
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state)
+	public BlockRenderType getRenderShape(BlockState state)
 	{
 		return BlockRenderType.MODEL;
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(IBlockReader world)
+	public TileEntity newBlockEntity(IBlockReader world)
 	{
 		return new PlopperTileEntity();
 	}

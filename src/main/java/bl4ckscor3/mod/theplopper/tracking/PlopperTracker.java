@@ -29,7 +29,7 @@ public class PlopperTracker
 	 */
 	public static void track(PlopperTileEntity te)
 	{
-		getTrackedPloppers(te.getWorld()).add(te.getPos().toImmutable());
+		getTrackedPloppers(te.getLevel()).add(te.getBlockPos().immutable());
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class PlopperTracker
 	 */
 	public static void stopTracking(PlopperTileEntity te)
 	{
-		getTrackedPloppers(te.getWorld()).remove(te.getPos());
+		getTrackedPloppers(te.getLevel()).remove(te.getBlockPos());
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class PlopperTracker
 
 			if(plopperPos != null)
 			{
-				TileEntity potentialPlopper = world.getTileEntity(plopperPos);
+				TileEntity potentialPlopper = world.getBlockEntity(plopperPos);
 
 				if(potentialPlopper instanceof PlopperTileEntity)
 				{
@@ -81,12 +81,12 @@ public class PlopperTracker
 	 */
 	private static Collection<BlockPos> getTrackedPloppers(World world)
 	{
-		Collection<BlockPos> ploppers = trackedPloppers.get(world.getDimensionKey());
+		Collection<BlockPos> ploppers = trackedPloppers.get(world.dimension());
 
 		if(ploppers == null)
 		{
 			ploppers = new HashSet<>();
-			trackedPloppers.put(world.getDimensionKey(), ploppers);
+			trackedPloppers.put(world.dimension(), ploppers);
 		}
 
 		return ploppers;

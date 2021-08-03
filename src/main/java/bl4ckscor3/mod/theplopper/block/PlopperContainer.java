@@ -46,50 +46,50 @@ public class PlopperContainer extends Container
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int index) //basically the chest code, but modified a bit to e.g. include custom slots
+	public ItemStack quickMoveStack(PlayerEntity player, int index) //basically the chest code, but modified a bit to e.g. include custom slots
 	{
 		ItemStack copy = ItemStack.EMPTY;
-		Slot slot = inventorySlots.get(index);
+		Slot slot = slots.get(index);
 
-		if(slot != null && slot.getHasStack())
+		if(slot != null && slot.hasItem())
 		{
-			ItemStack slotStack = slot.getStack();
+			ItemStack slotStack = slot.getItem();
 
 			copy = slotStack.copy();
 
-			if(index != 43 && getInventory().get(index).getItem() == ThePlopper.rangeUpgrade) //try to merge upgrades first
+			if(index != 43 && getItems().get(index).getItem() == ThePlopper.rangeUpgrade) //try to merge upgrades first
 			{
-				if(!mergeItemStack(slotStack, 43, 44, false))
+				if(!moveItemStackTo(slotStack, 43, 44, false))
 					return ItemStack.EMPTY;
 			}
 
 			if(index >= 36 && index <= 43) //plopper slots
 			{
-				if(!mergeItemStack(slotStack, 0, 36, false))
+				if(!moveItemStackTo(slotStack, 0, 36, false))
 					return ItemStack.EMPTY;
 			}
 			else if(index >= 27 && index <= 35) //hotbar
 			{
-				if(!mergeItemStack(slotStack, 0, 27, false))
+				if(!moveItemStackTo(slotStack, 0, 27, false))
 					return ItemStack.EMPTY;
 			}
 			else if(index <= 26) //main inventory
 			{
-				if(!mergeItemStack(slotStack, 27, 36, false))
+				if(!moveItemStackTo(slotStack, 27, 36, false))
 					return ItemStack.EMPTY;
 			}
 
 			if(slotStack.isEmpty())
-				slot.putStack(ItemStack.EMPTY);
+				slot.set(ItemStack.EMPTY);
 			else
-				slot.onSlotChanged();
+				slot.setChanged();
 		}
 
 		return copy;
 	}
 
 	@Override
-	public boolean canInteractWith(PlayerEntity player)
+	public boolean stillValid(PlayerEntity player)
 	{
 		return true;
 	}

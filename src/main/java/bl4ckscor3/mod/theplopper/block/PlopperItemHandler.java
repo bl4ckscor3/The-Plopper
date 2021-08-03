@@ -128,7 +128,7 @@ public class PlopperItemHandler implements IItemHandlerModifiable
 
 		s1.setCount(1);
 		s2.setCount(1);
-		return ItemStack.areItemStacksEqual(s1, s2);
+		return ItemStack.matches(s1, s2);
 	}
 
 	@Override

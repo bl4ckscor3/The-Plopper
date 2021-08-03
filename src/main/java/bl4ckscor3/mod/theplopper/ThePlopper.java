@@ -54,20 +54,20 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void registerTileEntityTypes(RegistryEvent.Register<TileEntityType<?>> event)
 	{
-		event.getRegistry().register(TileEntityType.Builder.create(PlopperTileEntity::new, thePlopper).build(null).setRegistryName(thePlopper.getRegistryName()));
+		event.getRegistry().register(TileEntityType.Builder.of(PlopperTileEntity::new, thePlopper).build(null).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
-		event.getRegistry().register(new Item(new Item.Properties().group(ItemGroup.REDSTONE).maxStackSize(7)).setRegistryName(new ResourceLocation(MOD_ID, "range_upgrade")));
-		event.getRegistry().register(new BlockItem(thePlopper, new Item.Properties().group(ItemGroup.REDSTONE)).setRegistryName(thePlopper.getRegistryName()));
+		event.getRegistry().register(new Item(new Item.Properties().tab(ItemGroup.TAB_REDSTONE).stacksTo(7)).setRegistryName(new ResourceLocation(MOD_ID, "range_upgrade")));
+		event.getRegistry().register(new BlockItem(thePlopper, new Item.Properties().tab(ItemGroup.TAB_REDSTONE)).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	@SubscribeEvent
 	public static void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event)
 	{
-		event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, data) -> new PlopperContainer(windowId, playerInv, playerInv.player.world.getTileEntity(data.readBlockPos()))).setRegistryName(thePlopper.getRegistryName()));
+		event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, data) -> new PlopperContainer(windowId, playerInv, playerInv.player.level.getBlockEntity(data.readBlockPos()))).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	public void onItemExpire(ItemExpireEvent event)
@@ -81,10 +81,10 @@ public class ThePlopper
 	 */
 	private static void checkForPloppers(ItemEntity ei)
 	{
-		if(ei.getEntityWorld().isRemote)
+		if(ei.getCommandSenderWorld().isClientSide)
 			return;
 
-		for(PlopperTileEntity plopper : PlopperTracker.getPloppersInRange(ei.getEntityWorld(), ei.getPosition()))
+		for(PlopperTileEntity plopper : PlopperTracker.getPloppersInRange(ei.getCommandSenderWorld(), ei.blockPosition()))
 		{
 			//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
 			if(plopper.suckUp(ei, ei.getItem()))

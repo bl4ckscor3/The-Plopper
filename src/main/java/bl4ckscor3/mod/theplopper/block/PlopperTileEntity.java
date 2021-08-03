@@ -67,31 +67,31 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 
 		if(remainder.equals(stack))
 		{
-			world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
+			level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
 			return false;
 		}
 
 		if(!remainder.isEmpty())
 		{
-			ItemEntity newIe = new ItemEntity(ie.getEntityWorld(), ie.getPosX(), ie.getPosY(), ie.getPosZ(), remainder);
+			ItemEntity newIe = new ItemEntity(ie.getCommandSenderWorld(), ie.getX(), ie.getY(), ie.getZ(), remainder);
 
 			ie.remove();
-			newIe.setMotion(0.0D, 0.0D, 0.0D);
-			newIe.getEntityWorld().addEntity(newIe);
+			newIe.setDeltaMovement(0.0D, 0.0D, 0.0D);
+			newIe.getCommandSenderWorld().addFreshEntity(newIe);
 		}
 		else
 			ie.remove();
 
-		if(!world.isRemote && Configuration.CONFIG.displayParticles.get())
+		if(!level.isClientSide && Configuration.CONFIG.displayParticles.get())
 		{
-			((ServerWorld)world).spawnParticle(ParticleTypes.SMOKE, ie.getPosX(), ie.getPosY() + 0.25D, ie.getPosZ(), 10, 0.0D, 0.1D, 0.0D, 0.001D);
-			((ServerWorld)world).spawnParticle(ParticleTypes.ENCHANT, getPos().getX() + 0.5D, getPos().getY() + 1.5D, getPos().getZ() + 0.5D, 20, 0.0D, 0.0D, 0.0D, 0.3D);
+			((ServerWorld)level).sendParticles(ParticleTypes.SMOKE, ie.getX(), ie.getY() + 0.25D, ie.getZ(), 10, 0.0D, 0.1D, 0.0D, 0.001D);
+			((ServerWorld)level).sendParticles(ParticleTypes.ENCHANT, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 1.5D, getBlockPos().getZ() + 0.5D, 20, 0.0D, 0.0D, 0.0D, 0.3D);
 		}
 
 		if(Configuration.CONFIG.playSound.get())
-			ie.getEntityWorld().playSound(null, ie.getPosition(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.NEUTRAL, 1.0F, 1.0F);
+			ie.getCommandSenderWorld().playSound(null, ie.blockPosition(), SoundEvents.CHICKEN_EGG, SoundCategory.NEUTRAL, 1.0F, 1.0F);
 
-		world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
+		level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
 		return true;
 	}
 
@@ -107,9 +107,9 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 	}
 
 	@Override
-	public void remove()
+	public void setRemoved()
 	{
-		super.remove();
+		super.setRemoved();
 
 		PlopperTracker.stopTracking(this);
 		tracked = false;
@@ -118,47 +118,47 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 	@Override
 	public CompoundNBT getUpdateTag()
 	{
-		return write(new CompoundNBT());
+		return save(new CompoundNBT());
 	}
 
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket()
 	{
-		return new SUpdateTileEntityPacket(pos, 1, getUpdateTag());
+		return new SUpdateTileEntityPacket(worldPosition, 1, getUpdateTag());
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
 	{
-		read(getBlockState(), pkt.getNbtCompound());
+		load(getBlockState(), pkt.getTag());
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT compound)
+	public void load(BlockState state, CompoundNBT compound)
 	{
 		CompoundNBT invTag = (CompoundNBT)compound.get("PlopperInventory");
 
 		for(int i = 0; i < inventory.size(); i++)
 		{
 			if(invTag != null && invTag.contains("Slot" + i))
-				inventory.set(i, ItemStack.read((CompoundNBT)invTag.get("Slot" + i)));
+				inventory.set(i, ItemStack.of((CompoundNBT)invTag.get("Slot" + i)));
 		}
 
-		super.read(state, compound);
+		super.load(state, compound);
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound)
+	public CompoundNBT save(CompoundNBT compound)
 	{
 		CompoundNBT invTag = new CompoundNBT();
 
 		for(int i = 0; i < inventory.size(); i++)
 		{
-			invTag.put("Slot" + i, inventory.get(i).write(new CompoundNBT()));
+			invTag.put("Slot" + i, inventory.get(i).save(new CompoundNBT()));
 		}
 
 		compound.put("PlopperInventory", invTag);
-		return super.write(compound);
+		return super.save(compound);
 	}
 
 	@Override
@@ -176,9 +176,9 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 	{
 		//slot 7 is the upgrade slot
 		int range = 2 + inventory.get(7).getCount() * 2;
-		int x = getPos().getX();
-		int y = getPos().getY();
-		int z = getPos().getZ();
+		int x = getBlockPos().getX();
+		int y = getBlockPos().getY();
+		int z = getBlockPos().getZ();
 		return new AxisAlignedBB(x - range, y - range, z - range, x + range, y + range, z + range);
 	}
 
@@ -191,7 +191,7 @@ public class PlopperTileEntity extends TileEntity implements ITickableTileEntity
 	@Override
 	public ITextComponent getDisplayName()
 	{
-		return new TranslationTextComponent(ThePlopper.thePlopper.getTranslationKey());
+		return new TranslationTextComponent(ThePlopper.thePlopper.getDescriptionId());
 	}
 
 	public NonNullList<ItemStack> getInventory()

@@ -18,9 +18,9 @@ public class PlopperScreen extends ContainerScreen<PlopperContainer>
 	{
 		super(container, playerInv, name);
 
-		xSize = 200;
-		ySize = 133;
-		playerInventoryTitleY = 40; //position "Inventory" correctly
+		imageWidth = 200;
+		imageHeight = 133;
+		inventoryLabelY = 40; //position "Inventory" correctly
 	}
 
 	@Override
@@ -28,15 +28,15 @@ public class PlopperScreen extends ContainerScreen<PlopperContainer>
 	{
 		super.render(matrix, mouseX, mouseY, partialTicks);
 
-		renderHoveredTooltip(matrix, mouseX, mouseY);
+		renderTooltip(matrix, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrix, float partialTicks, int mouseX, int mouseY)
+	protected void renderBg(MatrixStack matrix, float partialTicks, int mouseX, int mouseY)
 	{
 		renderBackground(matrix);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		Minecraft.getInstance().getTextureManager().bindTexture(GUI_TEXTURE);
-		blit(matrix, (width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
+		Minecraft.getInstance().getTextureManager().bind(GUI_TEXTURE);
+		blit(matrix, (width - imageWidth) / 2, (height - imageHeight) / 2, 0, 0, imageWidth, imageHeight);
 	}
 }

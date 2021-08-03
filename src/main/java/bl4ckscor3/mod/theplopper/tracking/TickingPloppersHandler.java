@@ -22,7 +22,7 @@ public class TickingPloppersHandler
 	 */
 	public static void stopTicking(PlopperTileEntity te)
 	{
-		if(te.getWorld().isRemote)
+		if(te.getLevel().isClientSide)
 			stopTickingClient.add(te);
 		else
 			stopTickingServer.add(te);
@@ -33,7 +33,7 @@ public class TickingPloppersHandler
 	{
 		for(PlopperTileEntity te : stopTickingClient)
 		{
-			te.getWorld().tickableTileEntities.remove(te);
+			te.getLevel().tickableBlockEntities.remove(te);
 		}
 
 		stopTickingClient.clear();
@@ -44,7 +44,7 @@ public class TickingPloppersHandler
 	{
 		for(PlopperTileEntity te : stopTickingServer)
 		{
-			te.getWorld().tickableTileEntities.remove(te);
+			te.getLevel().tickableBlockEntities.remove(te);
 		}
 
 		stopTickingServer.clear();
