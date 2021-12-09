@@ -1,8 +1,8 @@
 package bl4ckscor3.mod.theplopper;
 
 import bl4ckscor3.mod.theplopper.block.PlopperBlock;
-import bl4ckscor3.mod.theplopper.block.PlopperContainer;
-import bl4ckscor3.mod.theplopper.block.PlopperTileEntity;
+import bl4ckscor3.mod.theplopper.block.PlopperMneu;
+import bl4ckscor3.mod.theplopper.block.PlopperBlockEntity;
 import bl4ckscor3.mod.theplopper.tracking.PlopperTracker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -34,9 +34,9 @@ public class ThePlopper
 	@ObjectHolder(MOD_ID + ":range_upgrade")
 	public static Item rangeUpgrade;
 	@ObjectHolder(MOD_ID + ":plopper")
-	public static BlockEntityType<PlopperTileEntity> teTypePlopper;
+	public static BlockEntityType<PlopperBlockEntity> teTypePlopper;
 	@ObjectHolder(MOD_ID + ":plopper")
-	public static MenuType<PlopperContainer> cTypePlopper;
+	public static MenuType<PlopperMneu> cTypePlopper;
 
 	public ThePlopper()
 	{
@@ -54,7 +54,7 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void registerTileEntityTypes(RegistryEvent.Register<BlockEntityType<?>> event)
 	{
-		event.getRegistry().register(BlockEntityType.Builder.of(PlopperTileEntity::new, thePlopper).build(null).setRegistryName(thePlopper.getRegistryName()));
+		event.getRegistry().register(BlockEntityType.Builder.of(PlopperBlockEntity::new, thePlopper).build(null).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	@SubscribeEvent
@@ -67,7 +67,7 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void registerContainerTypes(RegistryEvent.Register<MenuType<?>> event)
 	{
-		event.getRegistry().register(IForgeMenuType.create((windowId, playerInv, data) -> new PlopperContainer(windowId, playerInv, playerInv.player.level.getBlockEntity(data.readBlockPos()))).setRegistryName(thePlopper.getRegistryName()));
+		event.getRegistry().register(IForgeMenuType.create((windowId, playerInv, data) -> new PlopperMneu(windowId, playerInv, playerInv.player.level.getBlockEntity(data.readBlockPos()))).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	public void onItemExpire(ItemExpireEvent event)
@@ -84,7 +84,7 @@ public class ThePlopper
 		if(ei.getCommandSenderWorld().isClientSide)
 			return;
 
-		for(PlopperTileEntity plopper : PlopperTracker.getPloppersInRange(ei.getCommandSenderWorld(), ei.blockPosition()))
+		for(PlopperBlockEntity plopper : PlopperTracker.getPloppersInRange(ei.getCommandSenderWorld(), ei.blockPosition()))
 		{
 			//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
 			if(plopper.suckUp(ei, ei.getItem()))

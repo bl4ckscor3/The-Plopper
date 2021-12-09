@@ -31,7 +31,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class PlopperTileEntity extends BlockEntity implements MenuProvider
+public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 {
 	public static final int SLOTS = 7;
 	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(7, ItemStack.EMPTY);
@@ -41,7 +41,7 @@ public class PlopperTileEntity extends BlockEntity implements MenuProvider
 	private LazyOptional<IItemHandler> upgradeHandler;
 	private boolean tracked = false;
 
-	public PlopperTileEntity(BlockPos pos, BlockState state)
+	public PlopperBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(ThePlopper.teTypePlopper, pos, state);
 	}
@@ -99,12 +99,12 @@ public class PlopperTileEntity extends BlockEntity implements MenuProvider
 		return true;
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, PlopperTileEntity te)
+	public static void tick(Level level, BlockPos pos, BlockState state, PlopperBlockEntity be)
 	{
-		if(!te.tracked)
+		if(!be.tracked)
 		{
-			PlopperTracker.track(te);
-			te.tracked = true;
+			PlopperTracker.track(be);
+			be.tracked = true;
 		}
 	}
 
@@ -136,9 +136,9 @@ public class PlopperTileEntity extends BlockEntity implements MenuProvider
 	}
 
 	@Override
-	public void load(CompoundTag compound)
+	public void load(CompoundTag tag)
 	{
-		CompoundTag invTag = (CompoundTag)compound.get("PlopperInventory");
+		CompoundTag invTag = (CompoundTag)tag.get("PlopperInventory");
 
 		for(int i = 0; i < inventory.size(); i++)
 		{
@@ -147,11 +147,11 @@ public class PlopperTileEntity extends BlockEntity implements MenuProvider
 		}
 
 		upgrade.set(0, ItemStack.of((CompoundTag)invTag.get("Slot7")));
-		super.load(compound);
+		super.load(tag);
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag compound)
+	public CompoundTag save(CompoundTag tag)
 	{
 		CompoundTag invTag = new CompoundTag();
 
@@ -161,8 +161,8 @@ public class PlopperTileEntity extends BlockEntity implements MenuProvider
 		}
 
 		invTag.put("Slot7", upgrade.get(0).save(new CompoundTag()));
-		compound.put("PlopperInventory", invTag);
-		return super.save(compound);
+		tag.put("PlopperInventory", invTag);
+		return super.save(tag);
 	}
 
 	@Override
@@ -188,7 +188,7 @@ public class PlopperTileEntity extends BlockEntity implements MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory playerInv, Player player)
 	{
-		return new PlopperContainer(windowId, playerInv, this);
+		return new PlopperMneu(windowId, playerInv, this);
 	}
 
 	@Override

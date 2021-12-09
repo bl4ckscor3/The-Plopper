@@ -8,11 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import bl4ckscor3.mod.theplopper.block.PlopperTileEntity;
+import bl4ckscor3.mod.theplopper.block.PlopperBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 
 /**
@@ -21,52 +20,47 @@ import net.minecraft.world.phys.AABB;
  */
 public class PlopperTracker
 {
-	private static final Map<ResourceKey<Level>,Collection<BlockPos>> trackedPloppers = new HashMap<>();
+	private static final Map<ResourceKey<Level>,Collection<BlockPos>> TRACKED_PLOPPERS = new HashMap<>();
 
 	/**
 	 * Starts tracking a plopper
-	 * @param te The plopper to track
+	 * @param be The plopper to track
 	 */
-	public static void track(PlopperTileEntity te)
+	public static void track(PlopperBlockEntity be)
 	{
-		getTrackedPloppers(te.getLevel()).add(te.getBlockPos().immutable());
+		getTrackedPloppers(be.getLevel()).add(be.getBlockPos().immutable());
 	}
 
 	/**
-	 * Stops tracking the given plopper. Use when e.g. removing the tile entity from the world
-	 * @param te The plopper to stop tracking
+	 * Stops tracking the given plopper. Use when e.g. removing the block entity from the world
+	 * @param be The plopper to stop tracking
 	 */
-	public static void stopTracking(PlopperTileEntity te)
+	public static void stopTracking(PlopperBlockEntity be)
 	{
-		getTrackedPloppers(te.getLevel()).remove(te.getBlockPos());
+		getTrackedPloppers(be.getLevel()).remove(be.getBlockPos());
 	}
 
 	/**
-	 * Gets all ploppers that have the given block position in their range in the given world
-	 * @param world The world
+	 * Gets all ploppers that have the given block position in their range in the given level
+	 * @param level The level
 	 * @param pos The block position
 	 * @return A list of all ploppers that have the given block position in their range
 	 */
-	public static List<PlopperTileEntity> getPloppersInRange(Level world, BlockPos pos)
+	public static List<PlopperBlockEntity> getPloppersInRange(Level level, BlockPos pos)
 	{
-		final Collection<BlockPos> ploppers = getTrackedPloppers(world);
-		List<PlopperTileEntity> returnValue = new ArrayList<>();
+		final Collection<BlockPos> ploppers = getTrackedPloppers(level);
+		List<PlopperBlockEntity> returnValue = new ArrayList<>();
 
 		for(Iterator<BlockPos> it = ploppers.iterator(); it.hasNext(); )
 		{
 			BlockPos plopperPos = it.next();
 
-			if(plopperPos != null)
+			if(plopperPos != null && level.getBlockEntity(plopperPos) instanceof PlopperBlockEntity plopper)
 			{
-				BlockEntity potentialPlopper = world.getBlockEntity(plopperPos);
+				if(canPlopperReach(plopper, pos))
+					returnValue.add(plopper);
 
-				if(potentialPlopper instanceof PlopperTileEntity)
-				{
-					if(canPlopperReach((PlopperTileEntity)potentialPlopper, pos))
-						returnValue.add((PlopperTileEntity)potentialPlopper);
-
-					continue;
-				}
+				continue;
 			}
 
 			it.remove();
@@ -76,17 +70,17 @@ public class PlopperTracker
 	}
 
 	/**
-	 * Gets all block positions at which a plopper is being tracked for the given world
-	 * @param world The world to get the tracked ploppers of
+	 * Gets all block positions at which a plopper is being tracked for the given level
+	 * @param level The level to get the tracked ploppers of
 	 */
-	private static Collection<BlockPos> getTrackedPloppers(Level world)
+	private static Collection<BlockPos> getTrackedPloppers(Level level)
 	{
-		Collection<BlockPos> ploppers = trackedPloppers.get(world.dimension());
+		Collection<BlockPos> ploppers = TRACKED_PLOPPERS.get(level.dimension());
 
 		if(ploppers == null)
 		{
 			ploppers = new HashSet<>();
-			trackedPloppers.put(world.dimension(), ploppers);
+			TRACKED_PLOPPERS.put(level.dimension(), ploppers);
 		}
 
 		return ploppers;
@@ -94,12 +88,12 @@ public class PlopperTracker
 
 	/**
 	 * Checks whether the given block position is contained in the given plopper's range
-	 * @param te The plopper
+	 * @param be The plopper
 	 * @param pos The block position
 	 */
-	private static boolean canPlopperReach(PlopperTileEntity te, BlockPos pos)
+	private static boolean canPlopperReach(PlopperBlockEntity be, BlockPos pos)
 	{
-		AABB plopperRange = te.getRange();
+		AABB plopperRange = be.getRange();
 
 		return plopperRange.minX <= pos.getX() && plopperRange.minY <= pos.getY() && plopperRange.minZ <= pos.getZ() && plopperRange.maxX >= pos.getX() && plopperRange.maxY >= pos.getY() && plopperRange.maxZ >= pos.getZ();
 	}

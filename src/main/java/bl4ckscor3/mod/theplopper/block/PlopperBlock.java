@@ -59,17 +59,17 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext ctx)
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx)
 	{
 		return SHAPE;
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
 	{
-		if(!world.isClientSide)
+		if(!level.isClientSide)
 		{
-			MenuProvider containerProvider = getMenuProvider(state, world, pos);
+			MenuProvider containerProvider = getMenuProvider(state, level, pos);
 
 			if(containerProvider != null)
 				NetworkHooks.openGui((ServerPlayer)player, containerProvider, pos);
@@ -79,28 +79,28 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	}
 
 	@Override
-	public MenuProvider getMenuProvider(BlockState state, Level world, BlockPos pos)
+	public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos)
 	{
-		return world.getBlockEntity(pos) instanceof PlopperTileEntity te ? te : null;
+		return level.getBlockEntity(pos) instanceof PlopperBlockEntity be ? be : null;
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving)
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		if(state.getBlock() != newState.getBlock())
 		{
-			if(world.getBlockEntity(pos) instanceof PlopperTileEntity te)
+			if(level.getBlockEntity(pos) instanceof PlopperBlockEntity be)
 			{
-				Containers.dropContents(world, pos, te.getInventory());
-				Containers.dropContents(world, pos, te.getUpgrade());
+				Containers.dropContents(level, pos, be.getInventory());
+				Containers.dropContents(level, pos, be.getUpgrade());
 			}
 		}
 
-		super.onRemove(state, world, pos, newState, isMoving);
+		super.onRemove(state, level, pos, newState, isMoving);
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, BlockGetter world, List<Component> tooltip, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> tooltip, TooltipFlag flag)
 	{
 		tooltip.add(new TranslatableComponent("theplopper:plopper.tooltip").setStyle(GRAY_STYLE));
 	}
@@ -112,12 +112,12 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos)
+	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos)
 	{
 		if(state.getValue(WATERLOGGED))
-			world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+			level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 
-		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+		return super.updateShape(state, facing, facingState, level, currentPos, facingPos);
 	}
 
 	@Override
@@ -141,12 +141,12 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 	{
-		return new PlopperTileEntity(pos, state);
+		return new PlopperBlockEntity(pos, state);
 	}
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
 	{
-		return createTickerHelper(type, ThePlopper.teTypePlopper, PlopperTileEntity::tick);
+		return createTickerHelper(type, ThePlopper.teTypePlopper, PlopperBlockEntity::tick);
 	}
 }
