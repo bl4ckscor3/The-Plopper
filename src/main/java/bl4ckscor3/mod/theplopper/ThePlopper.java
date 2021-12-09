@@ -13,7 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -67,7 +67,7 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void registerContainerTypes(RegistryEvent.Register<MenuType<?>> event)
 	{
-		event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, data) -> new PlopperContainer(windowId, playerInv, playerInv.player.level.getBlockEntity(data.readBlockPos()))).setRegistryName(thePlopper.getRegistryName()));
+		event.getRegistry().register(IForgeMenuType.create((windowId, playerInv, data) -> new PlopperContainer(windowId, playerInv, playerInv.player.level.getBlockEntity(data.readBlockPos()))).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	public void onItemExpire(ItemExpireEvent event)

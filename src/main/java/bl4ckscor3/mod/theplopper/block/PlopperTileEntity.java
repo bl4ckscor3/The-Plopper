@@ -126,7 +126,7 @@ public class PlopperTileEntity extends BlockEntity implements MenuProvider
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket()
 	{
-		return new ClientboundBlockEntityDataPacket(worldPosition, 1, getUpdateTag());
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
