@@ -120,7 +120,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 	@Override
 	public CompoundTag getUpdateTag()
 	{
-		return save(new CompoundTag());
+		return saveWithoutMetadata();
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 	@Override
 	public void load(CompoundTag tag)
 	{
-		CompoundTag invTag = (CompoundTag)tag.get("PlopperInventory");
+		CompoundTag invTag = tag.getCompound("PlopperInventory");
 
 		for(int i = 0; i < inventory.size(); i++)
 		{
@@ -146,12 +146,12 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 				inventory.set(i, ItemStack.of((CompoundTag)invTag.get("Slot" + i)));
 		}
 
-		upgrade.set(0, ItemStack.of((CompoundTag)invTag.get("Slot7")));
+		upgrade.set(0, ItemStack.of(invTag.getCompound("Slot7")));
 		super.load(tag);
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag)
+	public void saveAdditional(CompoundTag tag)
 	{
 		CompoundTag invTag = new CompoundTag();
 
@@ -162,7 +162,6 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 
 		invTag.put("Slot7", upgrade.get(0).save(new CompoundTag()));
 		tag.put("PlopperInventory", invTag);
-		return super.save(tag);
 	}
 
 	@Override
