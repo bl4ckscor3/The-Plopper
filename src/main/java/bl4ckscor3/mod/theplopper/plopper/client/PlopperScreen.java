@@ -3,17 +3,17 @@ package bl4ckscor3.mod.theplopper.plopper.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import bl4ckscor3.mod.theplopper.block.PlopperMneu;
+import bl4ckscor3.mod.theplopper.block.PlopperMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class PlopperScreen extends AbstractContainerScreen<PlopperMneu>
+public class PlopperScreen extends AbstractContainerScreen<PlopperMenu>
 {
 	private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("theplopper:textures/gui/container/plopper.png");
 
-	public PlopperScreen(PlopperMneu container, Inventory playerInv, Component name)
+	public PlopperScreen(PlopperMenu container, Inventory playerInv, Component name)
 	{
 		super(container, playerInv, name);
 

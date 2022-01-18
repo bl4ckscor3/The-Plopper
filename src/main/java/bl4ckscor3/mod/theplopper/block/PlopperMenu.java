@@ -10,11 +10,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class PlopperMneu extends AbstractContainerMenu
+public class PlopperMenu extends AbstractContainerMenu
 {
 	private final ContainerLevelAccess access;
 
-	public PlopperMneu(int windowId, Inventory playerInv, BlockEntity blockEntity)
+	public PlopperMenu(int windowId, Inventory playerInv, BlockEntity blockEntity)
 	{
 		super(ThePlopper.cTypePlopper, windowId);
 

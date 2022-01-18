@@ -187,7 +187,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory playerInv, Player player)
 	{
-		return new PlopperMneu(windowId, playerInv, this);
+		return new PlopperMenu(windowId, playerInv, this);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package bl4ckscor3.mod.theplopper;
 
 import bl4ckscor3.mod.theplopper.block.PlopperBlock;
-import bl4ckscor3.mod.theplopper.block.PlopperMneu;
+import bl4ckscor3.mod.theplopper.block.PlopperMenu;
 import bl4ckscor3.mod.theplopper.block.PlopperBlockEntity;
 import bl4ckscor3.mod.theplopper.tracking.PlopperTracker;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +36,7 @@ public class ThePlopper
 	@ObjectHolder(MOD_ID + ":plopper")
 	public static BlockEntityType<PlopperBlockEntity> teTypePlopper;
 	@ObjectHolder(MOD_ID + ":plopper")
-	public static MenuType<PlopperMneu> cTypePlopper;
+	public static MenuType<PlopperMenu> cTypePlopper;
 
 	public ThePlopper()
 	{
@@ -67,7 +67,7 @@ public class ThePlopper
 	@SubscribeEvent
 	public static void registerContainerTypes(RegistryEvent.Register<MenuType<?>> event)
 	{
-		event.getRegistry().register(IForgeMenuType.create((windowId, playerInv, data) -> new PlopperMneu(windowId, playerInv, playerInv.player.level.getBlockEntity(data.readBlockPos()))).setRegistryName(thePlopper.getRegistryName()));
+		event.getRegistry().register(IForgeMenuType.create((windowId, playerInv, data) -> new PlopperMenu(windowId, playerInv, playerInv.player.level.getBlockEntity(data.readBlockPos()))).setRegistryName(thePlopper.getRegistryName()));
 	}
 
 	public void onItemExpire(ItemExpireEvent event)
