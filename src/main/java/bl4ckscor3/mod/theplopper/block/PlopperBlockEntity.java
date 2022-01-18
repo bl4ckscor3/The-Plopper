@@ -8,7 +8,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -55,15 +54,14 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 	public boolean suckUp(ItemEntity ie, ItemStack stack)
 	{
 		ItemStack remainder = stack;
+		IItemHandler itemHandler = getInventoryHandler().orElse(null);
+
+		if(itemHandler == null)
+			return false;
 
 		for(int i = 0; i < inventory.size(); i++)
 		{
-			IItemHandler itemHandler = getInventoryHandler().orElse(null);
-
-			if(itemHandler != null)
-				remainder = itemHandler.insertItem(i, remainder, false);
-			else
-				return false;
+			remainder = itemHandler.insertItem(i, remainder, false);
 
 			if(remainder.isEmpty())
 				break;
@@ -96,6 +94,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 			ie.getCommandSenderWorld().playSound(null, ie.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.NEUTRAL, 1.0F, 1.0F);
 
 		level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+		setChanged();
 		return true;
 	}
 
@@ -130,12 +129,6 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
-	{
-		load(pkt.getTag());
-	}
-
-	@Override
 	public void load(CompoundTag tag)
 	{
 		CompoundTag invTag = tag.getCompound("PlopperInventory");
@@ -162,6 +155,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 
 		invTag.put("Slot7", upgrade.get(0).save(new CompoundTag()));
 		tag.put("PlopperInventory", invTag);
+		super.saveAdditional(tag);
 	}
 
 	@Override

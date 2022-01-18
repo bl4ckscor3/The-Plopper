@@ -51,7 +51,13 @@ public class PlopperMenu extends AbstractContainerMenu
 				}
 			});
 			//upgrade slot
-			be.getUpgradeHandler().ifPresent(itemHandler -> addSlot(new SlotItemHandler(itemHandler, 0, 177, 7)));
+			be.getUpgradeHandler().ifPresent(itemHandler -> addSlot(new SlotItemHandler(itemHandler, 0, 177, 7) {
+				@Override
+				public void setChanged()
+				{
+					blockEntity.setChanged();
+				}
+			}));
 		}
 	}
 
