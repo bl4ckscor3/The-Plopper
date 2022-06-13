@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,8 +33,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -45,16 +41,14 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBlock
 {
-	public static final String NAME = "plopper";
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	private static final Style GRAY_STYLE = Style.EMPTY.applyFormat(ChatFormatting.GRAY);
 	private static final VoxelShape SHAPE = Shapes.or(Shapes.or(Shapes.or(Shapes.or(Block.box(2, 0, 2, 14, 1, 14), Block.box(7, 1, 7, 9, 2, 9)), Block.box(6, 2, 6, 10, 3, 10)), Block.box(5, 3, 5, 11, 4, 11)), Block.box(4, 4, 4, 12, 5, 12));
 
-	public PlopperBlock()
+	public PlopperBlock(Properties properties)
 	{
-		super(Block.Properties.of(Material.METAL, MaterialColor.STONE).strength(3.0F, 8.0F).sound(SoundType.METAL).isRedstoneConductor((state, world, pos) -> false));
+		super(properties);
 
-		setRegistryName(ThePlopper.MOD_ID + ":" + NAME);
 		registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false));
 	}
 
@@ -102,7 +96,7 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	@Override
 	public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> tooltip, TooltipFlag flag)
 	{
-		tooltip.add(new TranslatableComponent("theplopper:plopper.tooltip").setStyle(GRAY_STYLE));
+		tooltip.add(Component.translatable("theplopper:plopper.tooltip").setStyle(GRAY_STYLE));
 	}
 
 	@Override
@@ -147,6 +141,6 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
 	{
-		return createTickerHelper(type, ThePlopper.teTypePlopper, PlopperBlockEntity::tick);
+		return createTickerHelper(type, ThePlopper.PLOPPER_BLOCK_ENTITY_TYPE.get(), PlopperBlockEntity::tick);
 	}
 }

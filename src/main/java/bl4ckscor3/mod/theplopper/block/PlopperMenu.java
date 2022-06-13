@@ -16,7 +16,7 @@ public class PlopperMenu extends AbstractContainerMenu
 
 	public PlopperMenu(int windowId, Inventory playerInv, BlockEntity blockEntity)
 	{
-		super(ThePlopper.cTypePlopper, windowId);
+		super(ThePlopper.PLOPPER_MENU_TYPE.get(), windowId);
 
 		access = ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
 
@@ -73,7 +73,7 @@ public class PlopperMenu extends AbstractContainerMenu
 
 			copy = slotStack.copy();
 
-			if(index != 43 && getItems().get(index).getItem() == ThePlopper.rangeUpgrade) //try to merge upgrades first
+			if(index != 43 && getItems().get(index).is(ThePlopper.RANGE_UPGRADE.get())) //try to merge upgrades first
 			{
 				if(!moveItemStackTo(slotStack, 43, 44, false))
 					return ItemStack.EMPTY;
@@ -107,6 +107,6 @@ public class PlopperMenu extends AbstractContainerMenu
 	@Override
 	public boolean stillValid(Player player)
 	{
-		return stillValid(access, player, ThePlopper.thePlopper);
+		return stillValid(access, player, ThePlopper.THE_PLOPPER.get());
 	}
 }

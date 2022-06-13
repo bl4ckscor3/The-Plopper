@@ -9,7 +9,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -42,7 +41,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 
 	public PlopperBlockEntity(BlockPos pos, BlockState state)
 	{
-		super(ThePlopper.teTypePlopper, pos, state);
+		super(ThePlopper.PLOPPER_BLOCK_ENTITY_TYPE.get(), pos, state);
 	}
 
 	/**
@@ -187,7 +186,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 	@Override
 	public Component getDisplayName()
 	{
-		return new TranslatableComponent(ThePlopper.thePlopper.getDescriptionId());
+		return Component.translatable(ThePlopper.THE_PLOPPER.get().getDescriptionId());
 	}
 
 	public NonNullList<ItemStack> getInventory()
