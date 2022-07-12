@@ -35,8 +35,8 @@ public class ThePlopper
 	public static final String MOD_ID = "theplopper";
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
-	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MOD_ID);
-	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
+	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
+	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MOD_ID);
 	public static final RegistryObject<PlopperBlock> THE_PLOPPER = BLOCKS.register("plopper", () -> new PlopperBlock(Block.Properties.of(Material.METAL, MaterialColor.STONE).strength(3.0F, 8.0F).sound(SoundType.METAL).isRedstoneConductor((state, world, pos) -> false)));
 	public static final RegistryObject<BlockItem> THE_PLOPPER_ITEM = ITEMS.register("plopper", () -> new BlockItem(THE_PLOPPER.get(), new Item.Properties().tab(CreativeModeTab.TAB_REDSTONE)));
 	public static final RegistryObject<Item> RANGE_UPGRADE = ITEMS.register("range_upgrade", () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_REDSTONE).stacksTo(7)));
@@ -58,7 +58,7 @@ public class ThePlopper
 
 	public void onItemExpire(ItemExpireEvent event)
 	{
-		checkForPloppers(event.getEntityItem());
+		checkForPloppers(event.getEntity());
 	}
 
 	/**

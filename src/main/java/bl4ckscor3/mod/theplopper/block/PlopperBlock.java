@@ -66,7 +66,7 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 			MenuProvider containerProvider = getMenuProvider(state, level, pos);
 
 			if(containerProvider != null)
-				NetworkHooks.openGui((ServerPlayer)player, containerProvider, pos);
+				NetworkHooks.openScreen((ServerPlayer)player, containerProvider, pos);
 		}
 
 		return InteractionResult.SUCCESS;
