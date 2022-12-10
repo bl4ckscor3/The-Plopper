@@ -8,12 +8,10 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@EventBusSubscriber(bus=Bus.MOD, modid=ThePlopper.MOD_ID, value=Dist.CLIENT)
-public class ClientReg
-{
+@EventBusSubscriber(bus = Bus.MOD, modid = ThePlopper.MOD_ID, value = Dist.CLIENT)
+public class ClientReg {
 	@SubscribeEvent
-	public static void onFMLClientSetup(FMLClientSetupEvent event)
-	{
+	public static void onFMLClientSetup(FMLClientSetupEvent event) {
 		event.enqueueWork(() -> MenuScreens.register(ThePlopper.PLOPPER_MENU_TYPE.get(), PlopperScreen::new));
 	}
 }

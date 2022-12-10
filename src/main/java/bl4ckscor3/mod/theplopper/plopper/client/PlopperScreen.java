@@ -9,12 +9,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class PlopperScreen extends AbstractContainerScreen<PlopperMenu>
-{
+public class PlopperScreen extends AbstractContainerScreen<PlopperMenu> {
 	private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("theplopper:textures/gui/container/plopper.png");
 
-	public PlopperScreen(PlopperMenu container, Inventory playerInv, Component name)
-	{
+	public PlopperScreen(PlopperMenu container, Inventory playerInv, Component name) {
 		super(container, playerInv, name);
 
 		imageWidth = 200;
@@ -23,16 +21,14 @@ public class PlopperScreen extends AbstractContainerScreen<PlopperMenu>
 	}
 
 	@Override
-	public void render(PoseStack matrix, int mouseX, int mouseY, float partialTicks)
-	{
+	public void render(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
 		super.render(matrix, mouseX, mouseY, partialTicks);
 
 		renderTooltip(matrix, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderBg(PoseStack matrix, float partialTicks, int mouseX, int mouseY)
-	{
+	protected void renderBg(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
 		renderBackground(matrix);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem._setShaderTexture(0, GUI_TEXTURE);

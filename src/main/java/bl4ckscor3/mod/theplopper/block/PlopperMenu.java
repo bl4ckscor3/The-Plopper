@@ -10,41 +10,33 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class PlopperMenu extends AbstractContainerMenu
-{
+public class PlopperMenu extends AbstractContainerMenu {
 	private final ContainerLevelAccess access;
 
-	public PlopperMenu(int windowId, Inventory playerInv, BlockEntity blockEntity)
-	{
+	public PlopperMenu(int windowId, Inventory playerInv, BlockEntity blockEntity) {
 		super(ThePlopper.PLOPPER_MENU_TYPE.get(), windowId);
 
 		access = ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
 
 		//player inventory
-		for(int i = 0; i < 3; i++)
-		{
-			for(int j = 0; j < 9; j++)
-			{
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 9; j++) {
 				addSlot(new Slot(playerInv, 9 + j + i * 9, 8 + j * 18, 51 + i * 18));
 			}
 		}
 
 		//player hotbar
-		for(int i = 0; i < 9; i++)
-		{
+		for (int i = 0; i < 9; i++) {
 			addSlot(new Slot(playerInv, i, 8 + i * 18, 109));
 		}
 
-		if(blockEntity instanceof PlopperBlockEntity be)
-		{
+		if (blockEntity instanceof PlopperBlockEntity be) {
 			//plopper inventory
 			be.getExtractOnlyInventoryHandler().ifPresent(itemHandler -> {
-				for(int i = 0; i < 7; i++)
-				{
+				for (int i = 0; i < 7; i++) {
 					addSlot(new SlotItemHandler(itemHandler, i, 26 + i * 18, 20) {
 						@Override
-						public boolean mayPlace(ItemStack stack)
-						{
+						public boolean mayPlace(ItemStack stack) {
 							return false;
 						}
 					});
@@ -53,8 +45,7 @@ public class PlopperMenu extends AbstractContainerMenu
 			//upgrade slot
 			be.getUpgradeHandler().ifPresent(itemHandler -> addSlot(new SlotItemHandler(itemHandler, 0, 177, 7) {
 				@Override
-				public void setChanged()
-				{
+				public void setChanged() {
 					blockEntity.setChanged();
 				}
 			}));
@@ -67,35 +58,30 @@ public class PlopperMenu extends AbstractContainerMenu
 		ItemStack copy = ItemStack.EMPTY;
 		Slot slot = slots.get(index);
 
-		if(slot != null && slot.hasItem())
-		{
+		if (slot != null && slot.hasItem()) {
 			ItemStack slotStack = slot.getItem();
 
 			copy = slotStack.copy();
 
-			if(index != 43 && getItems().get(index).is(ThePlopper.RANGE_UPGRADE.get())) //try to merge upgrades first
-			{
-				if(!moveItemStackTo(slotStack, 43, 44, false))
+			if (index != 43 && getItems().get(index).is(ThePlopper.RANGE_UPGRADE.get())) { //try to merge upgrades first
+				if (!moveItemStackTo(slotStack, 43, 44, false))
 					return ItemStack.EMPTY;
 			}
 
-			if(index >= 36 && index <= 43) //plopper slots
-			{
-				if(!moveItemStackTo(slotStack, 0, 36, false))
+			if (index >= 36 && index <= 43) { //plopper slots
+				if (!moveItemStackTo(slotStack, 0, 36, false))
 					return ItemStack.EMPTY;
 			}
-			else if(index >= 27 && index <= 35) //hotbar
-			{
-				if(!moveItemStackTo(slotStack, 0, 27, false))
+			else if (index >= 27 && index <= 35) { //hotbar
+				if (!moveItemStackTo(slotStack, 0, 27, false))
 					return ItemStack.EMPTY;
 			}
-			else if(index <= 26) //main inventory
-			{
-				if(!moveItemStackTo(slotStack, 27, 36, false))
+			else if (index <= 26) { //main inventory
+				if (!moveItemStackTo(slotStack, 27, 36, false))
 					return ItemStack.EMPTY;
 			}
 
-			if(slotStack.isEmpty())
+			if (slotStack.isEmpty())
 				slot.set(ItemStack.EMPTY);
 			else
 				slot.setChanged();
@@ -105,8 +91,7 @@ public class PlopperMenu extends AbstractContainerMenu
 	}
 
 	@Override
-	public boolean stillValid(Player player)
-	{
+	public boolean stillValid(Player player) {
 		return stillValid(access, player, ThePlopper.THE_PLOPPER.get());
 	}
 }

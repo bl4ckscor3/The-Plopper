@@ -29,9 +29,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 @Mod(ThePlopper.MOD_ID)
-@EventBusSubscriber(bus=Bus.MOD)
-public class ThePlopper
-{
+@EventBusSubscriber(bus = Bus.MOD)
+public class ThePlopper {
 	public static final String MOD_ID = "theplopper";
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
@@ -43,8 +42,7 @@ public class ThePlopper
 	public static final RegistryObject<BlockEntityType<PlopperBlockEntity>> PLOPPER_BLOCK_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register("plopper", () -> BlockEntityType.Builder.of(PlopperBlockEntity::new, THE_PLOPPER.get()).build(null));
 	public static final RegistryObject<MenuType<PlopperMenu>> PLOPPER_MENU_TYPE = MENU_TYPES.register("plopper", () -> IForgeMenuType.create((windowId, playerInv, data) -> new PlopperMenu(windowId, playerInv, playerInv.player.level.getBlockEntity(data.readBlockPos()))));
 
-	public ThePlopper()
-	{
+	public ThePlopper() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
 		BLOCKS.register(modEventBus);
@@ -56,24 +54,22 @@ public class ThePlopper
 		//MinecraftForge.EVENT_BUS.addListener(this::onItemToss);
 	}
 
-	public void onItemExpire(ItemExpireEvent event)
-	{
+	public void onItemExpire(ItemExpireEvent event) {
 		checkForPloppers(event.getEntity());
 	}
 
 	/**
 	 * Checks for any ploppers in increasing ranges and makes them suck up the item if applicable
+	 *
 	 * @param ei The item to potentially suck up
 	 */
-	private static void checkForPloppers(ItemEntity ei)
-	{
-		if(ei.getCommandSenderWorld().isClientSide)
+	private static void checkForPloppers(ItemEntity ei) {
+		if (ei.getCommandSenderWorld().isClientSide)
 			return;
 
-		for(PlopperBlockEntity plopper : PlopperTracker.getPloppersInRange(ei.getCommandSenderWorld(), ei.blockPosition()))
-		{
+		for (PlopperBlockEntity plopper : PlopperTracker.getPloppersInRange(ei.getCommandSenderWorld(), ei.blockPosition())) {
 			//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
-			if(plopper.suckUp(ei, ei.getItem()))
+			if (plopper.suckUp(ei, ei.getItem()))
 				return;
 		}
 	}

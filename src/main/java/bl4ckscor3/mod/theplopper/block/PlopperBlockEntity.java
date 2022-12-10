@@ -29,8 +29,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class PlopperBlockEntity extends BlockEntity implements MenuProvider
-{
+public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	public static final int SLOTS = 7;
 	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(7, ItemStack.EMPTY);
 	private NonNullList<ItemStack> upgrade = NonNullList.<ItemStack>withSize(1, ItemStack.EMPTY);
@@ -39,41 +38,37 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 	private LazyOptional<IItemHandler> upgradeHandler;
 	private boolean tracked = false;
 
-	public PlopperBlockEntity(BlockPos pos, BlockState state)
-	{
+	public PlopperBlockEntity(BlockPos pos, BlockState state) {
 		super(ThePlopper.PLOPPER_BLOCK_ENTITY_TYPE.get(), pos, state);
 	}
 
 	/**
 	 * Adds the given {@link net.minecraft.item.ItemStack} to the inventory
+	 *
 	 * @param ie The ItemEntity that gets sucked up
 	 * @param stack The stack to add
 	 * @return true if (part of) the stack has been sucked up, false if the stack couldn't be sucked up
 	 */
-	public boolean suckUp(ItemEntity ie, ItemStack stack)
-	{
+	public boolean suckUp(ItemEntity ie, ItemStack stack) {
 		ItemStack remainder = stack;
 		IItemHandler itemHandler = getInventoryHandler().orElse(null);
 
-		if(itemHandler == null)
+		if (itemHandler == null)
 			return false;
 
-		for(int i = 0; i < inventory.size(); i++)
-		{
+		for (int i = 0; i < inventory.size(); i++) {
 			remainder = itemHandler.insertItem(i, remainder, false);
 
-			if(remainder.isEmpty())
+			if (remainder.isEmpty())
 				break;
 		}
 
-		if(remainder.equals(stack))
-		{
+		if (remainder.equals(stack)) {
 			level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
 			return false;
 		}
 
-		if(!remainder.isEmpty())
-		{
+		if (!remainder.isEmpty()) {
 			ItemEntity newIe = new ItemEntity(ie.getCommandSenderWorld(), ie.getX(), ie.getY(), ie.getZ(), remainder);
 
 			ie.discard();
@@ -83,13 +78,12 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 		else
 			ie.discard();
 
-		if(!level.isClientSide && Configuration.CONFIG.displayParticles.get())
-		{
-			((ServerLevel)level).sendParticles(ParticleTypes.SMOKE, ie.getX(), ie.getY() + 0.25D, ie.getZ(), 10, 0.0D, 0.1D, 0.0D, 0.001D);
-			((ServerLevel)level).sendParticles(ParticleTypes.ENCHANT, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 1.5D, getBlockPos().getZ() + 0.5D, 20, 0.0D, 0.0D, 0.0D, 0.3D);
+		if (!level.isClientSide && Configuration.CONFIG.displayParticles.get()) {
+			((ServerLevel) level).sendParticles(ParticleTypes.SMOKE, ie.getX(), ie.getY() + 0.25D, ie.getZ(), 10, 0.0D, 0.1D, 0.0D, 0.001D);
+			((ServerLevel) level).sendParticles(ParticleTypes.ENCHANT, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 1.5D, getBlockPos().getZ() + 0.5D, 20, 0.0D, 0.0D, 0.0D, 0.3D);
 		}
 
-		if(Configuration.CONFIG.playSound.get())
+		if (Configuration.CONFIG.playSound.get())
 			ie.getCommandSenderWorld().playSound(null, ie.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.NEUTRAL, 1.0F, 1.0F);
 
 		level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
@@ -97,18 +91,15 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 		return true;
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, PlopperBlockEntity be)
-	{
-		if(!be.tracked)
-		{
+	public static void tick(Level level, BlockPos pos, BlockState state, PlopperBlockEntity be) {
+		if (!be.tracked) {
 			PlopperTracker.track(be);
 			be.tracked = true;
 		}
 	}
 
 	@Override
-	public void setRemoved()
-	{
+	public void setRemoved() {
 		super.setRemoved();
 
 		PlopperTracker.stopTracking(this);
@@ -116,26 +107,22 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 	}
 
 	@Override
-	public CompoundTag getUpdateTag()
-	{
+	public CompoundTag getUpdateTag() {
 		return saveWithoutMetadata();
 	}
 
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket()
-	{
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
-	public void load(CompoundTag tag)
-	{
+	public void load(CompoundTag tag) {
 		CompoundTag invTag = tag.getCompound("PlopperInventory");
 
-		for(int i = 0; i < inventory.size(); i++)
-		{
-			if(invTag != null && invTag.contains("Slot" + i))
-				inventory.set(i, ItemStack.of((CompoundTag)invTag.get("Slot" + i)));
+		for (int i = 0; i < inventory.size(); i++) {
+			if (invTag != null && invTag.contains("Slot" + i))
+				inventory.set(i, ItemStack.of((CompoundTag) invTag.get("Slot" + i)));
 		}
 
 		upgrade.set(0, ItemStack.of(invTag.getCompound("Slot7")));
@@ -143,12 +130,10 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag tag)
-	{
+	public void saveAdditional(CompoundTag tag) {
 		CompoundTag invTag = new CompoundTag();
 
-		for(int i = 0; i < inventory.size(); i++)
-		{
+		for (int i = 0; i < inventory.size(); i++) {
 			invTag.put("Slot" + i, inventory.get(i).save(new CompoundTag()));
 		}
 
@@ -158,18 +143,17 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side)
-	{
-		if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get()))
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get()))
 			return getExtractOnlyInventoryHandler().cast();
-		else return super.getCapability(cap, side);
+		else
+			return super.getCapability(cap, side);
 	}
 
 	/**
 	 * @return The range this plopper will pick up items in
 	 */
-	public AABB getRange()
-	{
+	public AABB getRange() {
 		int range = 2 + upgrade.get(0).getCount() * 2;
 		int x = getBlockPos().getX();
 		int y = getBlockPos().getY();
@@ -178,51 +162,42 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider
 	}
 
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, Inventory playerInv, Player player)
-	{
+	public AbstractContainerMenu createMenu(int windowId, Inventory playerInv, Player player) {
 		return new PlopperMenu(windowId, playerInv, this);
 	}
 
 	@Override
-	public Component getDisplayName()
-	{
+	public Component getDisplayName() {
 		return Component.translatable(ThePlopper.THE_PLOPPER.get().getDescriptionId());
 	}
 
-	public NonNullList<ItemStack> getInventory()
-	{
+	public NonNullList<ItemStack> getInventory() {
 		return inventory;
 	}
 
-	public NonNullList<ItemStack> getUpgrade()
-	{
+	public NonNullList<ItemStack> getUpgrade() {
 		return upgrade;
 	}
 
-	public LazyOptional<IItemHandler> getInventoryHandler()
-	{
-		if(inventoryHandler == null)
+	public LazyOptional<IItemHandler> getInventoryHandler() {
+		if (inventoryHandler == null)
 			inventoryHandler = LazyOptional.of(() -> new ItemStackHandler(inventory));
 
 		return inventoryHandler;
 	}
 
-	public LazyOptional<IItemHandler> getExtractOnlyInventoryHandler()
-	{
-		if(extractOnlyInventoryHandler == null)
+	public LazyOptional<IItemHandler> getExtractOnlyInventoryHandler() {
+		if (extractOnlyInventoryHandler == null)
 			extractOnlyInventoryHandler = LazyOptional.of(() -> new ExtractOnlyItemStackHandler(inventory));
 
 		return extractOnlyInventoryHandler;
 	}
 
-	public LazyOptional<IItemHandler> getUpgradeHandler()
-	{
-		if(upgradeHandler == null)
-		{
+	public LazyOptional<IItemHandler> getUpgradeHandler() {
+		if (upgradeHandler == null) {
 			upgradeHandler = LazyOptional.of(() -> new ItemStackHandler(upgrade) {
 				@Override
-				public int getSlotLimit(int slot)
-				{
+				public int getSlotLimit(int slot) {
 					return 7;
 				}
 			});

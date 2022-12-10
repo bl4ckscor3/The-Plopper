@@ -39,52 +39,43 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 
-public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBlock
-{
+public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	private static final Style GRAY_STYLE = Style.EMPTY.applyFormat(ChatFormatting.GRAY);
 	private static final VoxelShape SHAPE = Shapes.or(Shapes.or(Shapes.or(Shapes.or(Block.box(2, 0, 2, 14, 1, 14), Block.box(7, 1, 7, 9, 2, 9)), Block.box(6, 2, 6, 10, 3, 10)), Block.box(5, 3, 5, 11, 4, 11)), Block.box(4, 4, 4, 12, 5, 12));
 
-	public PlopperBlock(Properties properties)
-	{
+	public PlopperBlock(Properties properties) {
 		super(properties);
 
 		registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false));
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx)
-	{
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
 		return SHAPE;
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
-	{
-		if(!level.isClientSide)
-		{
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (!level.isClientSide) {
 			MenuProvider containerProvider = getMenuProvider(state, level, pos);
 
-			if(containerProvider != null)
-				NetworkHooks.openScreen((ServerPlayer)player, containerProvider, pos);
+			if (containerProvider != null)
+				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, pos);
 		}
 
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos)
-	{
+	public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
 		return level.getBlockEntity(pos) instanceof PlopperBlockEntity be ? be : null;
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-	{
-		if(state.getBlock() != newState.getBlock())
-		{
-			if(level.getBlockEntity(pos) instanceof PlopperBlockEntity be)
-			{
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (state.getBlock() != newState.getBlock()) {
+			if (level.getBlockEntity(pos) instanceof PlopperBlockEntity be) {
 				Containers.dropContents(level, pos, be.getInventory());
 				Containers.dropContents(level, pos, be.getUpgrade());
 			}
@@ -94,53 +85,45 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> tooltip, TooltipFlag flag)
-	{
+	public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
 		tooltip.add(Component.translatable("theplopper:plopper.tooltip").setStyle(GRAY_STYLE));
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context)
-	{
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		return defaultBlockState().setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos)
-	{
-		if(state.getValue(WATERLOGGED))
+	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+		if (state.getValue(WATERLOGGED))
 			level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 
 		return super.updateShape(state, facing, facingState, level, currentPos, facingPos);
 	}
 
 	@Override
-	public FluidState getFluidState(BlockState state)
-	{
+	public FluidState getFluidState(BlockState state) {
 		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 
 	@Override
-	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
-	{
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
 		builder.add(WATERLOGGED);
 	}
 
 	@Override
-	public RenderShape getRenderShape(BlockState state)
-	{
+	public RenderShape getRenderShape(BlockState state) {
 		return RenderShape.MODEL;
 	}
 
 	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
-	{
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new PlopperBlockEntity(pos, state);
 	}
 
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
-	{
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		return createTickerHelper(type, ThePlopper.PLOPPER_BLOCK_ENTITY_TYPE.get(), PlopperBlockEntity::tick);
 	}
 }
