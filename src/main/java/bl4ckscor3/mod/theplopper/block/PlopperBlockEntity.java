@@ -24,8 +24,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -144,7 +144,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get()))
+		if (cap == ForgeCapabilities.ITEM_HANDLER && (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get()))
 			return getExtractOnlyInventoryHandler().cast();
 		else
 			return super.getCapability(cap, side);

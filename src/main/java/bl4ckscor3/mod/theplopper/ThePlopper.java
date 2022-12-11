@@ -7,7 +7,7 @@ import bl4ckscor3.mod.theplopper.tracking.PlopperTracker;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -16,8 +16,10 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -37,8 +39,8 @@ public class ThePlopper {
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
 	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MOD_ID);
 	public static final RegistryObject<PlopperBlock> THE_PLOPPER = BLOCKS.register("plopper", () -> new PlopperBlock(Block.Properties.of(Material.METAL, MaterialColor.STONE).strength(3.0F, 8.0F).sound(SoundType.METAL).isRedstoneConductor((state, world, pos) -> false)));
-	public static final RegistryObject<BlockItem> THE_PLOPPER_ITEM = ITEMS.register("plopper", () -> new BlockItem(THE_PLOPPER.get(), new Item.Properties().tab(CreativeModeTab.TAB_REDSTONE)));
-	public static final RegistryObject<Item> RANGE_UPGRADE = ITEMS.register("range_upgrade", () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_REDSTONE).stacksTo(7)));
+	public static final RegistryObject<BlockItem> THE_PLOPPER_ITEM = ITEMS.register("plopper", () -> new BlockItem(THE_PLOPPER.get(), new Item.Properties()));
+	public static final RegistryObject<Item> RANGE_UPGRADE = ITEMS.register("range_upgrade", () -> new Item(new Item.Properties().stacksTo(7)));
 	public static final RegistryObject<BlockEntityType<PlopperBlockEntity>> PLOPPER_BLOCK_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register("plopper", () -> BlockEntityType.Builder.of(PlopperBlockEntity::new, THE_PLOPPER.get()).build(null));
 	public static final RegistryObject<MenuType<PlopperMenu>> PLOPPER_MENU_TYPE = MENU_TYPES.register("plopper", () -> IForgeMenuType.create((windowId, playerInv, data) -> new PlopperMenu(windowId, playerInv, playerInv.player.level.getBlockEntity(data.readBlockPos()))));
 
@@ -52,6 +54,14 @@ public class ThePlopper {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.CONFIG_SPEC);
 		MinecraftForge.EVENT_BUS.addListener(this::onItemExpire);
 		//MinecraftForge.EVENT_BUS.addListener(this::onItemToss);
+	}
+
+	@SubscribeEvent
+	public static void onCreativeModeTabBuildContents(CreativeModeTabEvent.BuildContents event) {
+		if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS || event.getTab() == CreativeModeTabs.REDSTONE_BLOCKS) {
+			event.accept(THE_PLOPPER_ITEM.get());
+			event.accept(RANGE_UPGRADE.get());
+		}
 	}
 
 	public void onItemExpire(ItemExpireEvent event) {
