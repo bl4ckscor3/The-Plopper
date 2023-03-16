@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "theplopper:items/range_upgrade"
+        "layer0": "theplopper:item/range_upgrade"
     }
 }

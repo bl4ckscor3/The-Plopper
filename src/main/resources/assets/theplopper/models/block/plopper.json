@@ -1,11 +1,11 @@
 {
 	"textures": {
-		"0": "theplopper:blocks/plopper_base",
-		"1": "theplopper:blocks/plopper_base_bottom",
+		"0": "theplopper:block/plopper_base",
+		"1": "theplopper:block/plopper_base_bottom",
 		"2": "block/hopper_inside",
 		"3": "block/hopper_outside",
 		"4": "block/hopper_top",
-		"particle": "theplopper:blocks/plopper_base"
+		"particle": "theplopper:block/plopper_base"
 	},
 	"elements": [
 		{
