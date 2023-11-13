@@ -23,11 +23,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	public static final int SLOTS = 7;
@@ -144,7 +144,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == ForgeCapabilities.ITEM_HANDLER && (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get()))
+		if (cap == Capabilities.ITEM_HANDLER && (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get()))
 			return getExtractOnlyInventoryHandler().cast();
 		else
 			return super.getCapability(cap, side);

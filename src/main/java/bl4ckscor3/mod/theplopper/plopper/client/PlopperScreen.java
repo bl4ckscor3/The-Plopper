@@ -28,8 +28,6 @@ public class PlopperScreen extends AbstractContainerScreen<PlopperMenu> {
 
 	@Override
 	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-		renderBackground(guiGraphics);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		guiGraphics.blit(GUI_TEXTURE, (width - imageWidth) / 2, (height - imageHeight) / 2, 0, 0, imageWidth, imageHeight);
 	}
 }

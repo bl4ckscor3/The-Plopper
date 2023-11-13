@@ -7,3 +7,4 @@
 *.launch
 .classpath
 .gradle
+.idea/

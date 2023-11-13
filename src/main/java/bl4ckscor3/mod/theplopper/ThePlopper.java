@@ -13,22 +13,23 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.entity.item.ItemExpireEvent;
-import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.entity.item.ItemExpireEvent;
+import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 @Mod(ThePlopper.MOD_ID)
 @EventBusSubscriber(bus = Bus.MOD)
@@ -42,7 +43,7 @@ public class ThePlopper {
 	public static final RegistryObject<BlockItem> THE_PLOPPER_ITEM = ITEMS.register("plopper", () -> new BlockItem(THE_PLOPPER.get(), new Item.Properties()));
 	public static final RegistryObject<Item> RANGE_UPGRADE = ITEMS.register("range_upgrade", () -> new Item(new Item.Properties().stacksTo(7)));
 	public static final RegistryObject<BlockEntityType<PlopperBlockEntity>> PLOPPER_BLOCK_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register("plopper", () -> BlockEntityType.Builder.of(PlopperBlockEntity::new, THE_PLOPPER.get()).build(null));
-	public static final RegistryObject<MenuType<PlopperMenu>> PLOPPER_MENU_TYPE = MENU_TYPES.register("plopper", () -> IForgeMenuType.create((windowId, playerInv, data) -> new PlopperMenu(windowId, playerInv, playerInv.player.level().getBlockEntity(data.readBlockPos()))));
+	public static final RegistryObject<MenuType<PlopperMenu>> PLOPPER_MENU_TYPE = MENU_TYPES.register("plopper", () -> IMenuTypeExtension.create((windowId, playerInv, data) -> new PlopperMenu(windowId, playerInv, playerInv.player.level().getBlockEntity(data.readBlockPos()))));
 
 	public ThePlopper() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -52,8 +53,10 @@ public class ThePlopper {
 		BLOCK_ENTITY_TYPES.register(modEventBus);
 		MENU_TYPES.register(modEventBus);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.CONFIG_SPEC);
-		MinecraftForge.EVENT_BUS.addListener(this::onItemExpire);
-		MinecraftForge.EVENT_BUS.addListener(this::onItemToss);
+		NeoForge.EVENT_BUS.addListener(this::onItemExpire);
+
+		if(!FMLEnvironment.production)
+			NeoForge.EVENT_BUS.addListener(this::onItemToss);
 	}
 
 	@SubscribeEvent
@@ -87,7 +90,6 @@ public class ThePlopper {
 	/**
 	 * For testing purposes
 	 */
-	//TODO: Comment out on release
 	public void onItemToss(ItemTossEvent event) {
 		checkForPloppers(event.getEntity());
 	}

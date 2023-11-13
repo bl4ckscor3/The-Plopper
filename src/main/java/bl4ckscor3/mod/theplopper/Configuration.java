@@ -1,25 +1,24 @@
 package bl4ckscor3.mod.theplopper;
 
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-
 public class Configuration {
-	public static final ForgeConfigSpec CONFIG_SPEC;
+	public static final ModConfigSpec CONFIG_SPEC;
 	public static final Configuration CONFIG;
 	public final BooleanValue displayParticles;
 	public final BooleanValue playSound;
 	public final BooleanValue bypassOutputSide;
 
 	static {
-		Pair<Configuration, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Configuration::new);
+		Pair<Configuration, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Configuration::new);
 
 		CONFIG_SPEC = specPair.getRight();
 		CONFIG = specPair.getLeft();
 	}
 
-	Configuration(ForgeConfigSpec.Builder builder) {
+	Configuration(ModConfigSpec.Builder builder) {
 		//@formatter:off
 		displayParticles = builder
 				.comment("Whether particles should show up every time the plopper picks up an item")
