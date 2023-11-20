@@ -1,7 +1,5 @@
 package bl4ckscor3.mod.theplopper.plopper.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import bl4ckscor3.mod.theplopper.block.PlopperMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
