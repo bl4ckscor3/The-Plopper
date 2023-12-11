@@ -23,9 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
@@ -33,9 +30,8 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	public static final int SLOTS = 7;
 	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(7, ItemStack.EMPTY);
 	private NonNullList<ItemStack> upgrade = NonNullList.<ItemStack>withSize(1, ItemStack.EMPTY);
-	private LazyOptional<IItemHandler> inventoryHandler;
-	private LazyOptional<IItemHandler> extractOnlyInventoryHandler;
-	private LazyOptional<IItemHandler> upgradeHandler;
+	private IItemHandler inventoryHandler;
+	private IItemHandler upgradeHandler;
 	private boolean tracked = false;
 
 	public PlopperBlockEntity(BlockPos pos, BlockState state) {
@@ -51,7 +47,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	 */
 	public boolean suckUp(ItemEntity ie, ItemStack stack) {
 		ItemStack remainder = stack;
-		IItemHandler itemHandler = getInventoryHandler().orElse(null);
+		IItemHandler itemHandler = getInventoryHandler();
 
 		if (itemHandler == null)
 			return false;
@@ -142,12 +138,11 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 		super.saveAdditional(tag);
 	}
 
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == Capabilities.ITEM_HANDLER && (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get()))
-			return getExtractOnlyInventoryHandler().cast();
-		else
-			return super.getCapability(cap, side);
+	public static IItemHandler getCapability(PlopperBlockEntity be, Direction side) {
+		if (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get())
+			return new ExtractOnlyItemStackHandler(be.inventory);
+
+		return null;
 	}
 
 	/**
@@ -179,28 +174,21 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 		return upgrade;
 	}
 
-	public LazyOptional<IItemHandler> getInventoryHandler() {
+	public IItemHandler getInventoryHandler() {
 		if (inventoryHandler == null)
-			inventoryHandler = LazyOptional.of(() -> new ItemStackHandler(inventory));
+			inventoryHandler = new ItemStackHandler(inventory);
 
 		return inventoryHandler;
 	}
 
-	public LazyOptional<IItemHandler> getExtractOnlyInventoryHandler() {
-		if (extractOnlyInventoryHandler == null)
-			extractOnlyInventoryHandler = LazyOptional.of(() -> new ExtractOnlyItemStackHandler(inventory));
-
-		return extractOnlyInventoryHandler;
-	}
-
-	public LazyOptional<IItemHandler> getUpgradeHandler() {
+	public IItemHandler getUpgradeHandler() {
 		if (upgradeHandler == null) {
-			upgradeHandler = LazyOptional.of(() -> new ItemStackHandler(upgrade) {
+			upgradeHandler = new ItemStackHandler(upgrade) {
 				@Override
 				public int getSlotLimit(int slot) {
 					return 7;
 				}
-			});
+			};
 		}
 
 		return upgradeHandler;

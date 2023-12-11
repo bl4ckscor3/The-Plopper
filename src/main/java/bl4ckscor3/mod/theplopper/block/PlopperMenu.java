@@ -32,23 +32,22 @@ public class PlopperMenu extends AbstractContainerMenu {
 
 		if (blockEntity instanceof PlopperBlockEntity be) {
 			//plopper inventory
-			be.getExtractOnlyInventoryHandler().ifPresent(itemHandler -> {
-				for (int i = 0; i < 7; i++) {
-					addSlot(new SlotItemHandler(itemHandler, i, 26 + i * 18, 20) {
-						@Override
-						public boolean mayPlace(ItemStack stack) {
-							return false;
-						}
-					});
-				}
-			});
+			for (int i = 0; i < 7; i++) {
+				addSlot(new SlotItemHandler(be.getInventoryHandler(), i, 26 + i * 18, 20) {
+					@Override
+					public boolean mayPlace(ItemStack stack) {
+						return false;
+					}
+				});
+			}
+
 			//upgrade slot
-			be.getUpgradeHandler().ifPresent(itemHandler -> addSlot(new SlotItemHandler(itemHandler, 0, 177, 7) {
+			addSlot(new SlotItemHandler(be.getUpgradeHandler(), 0, 177, 7) {
 				@Override
 				public void setChanged() {
 					blockEntity.setChanged();
 				}
-			}));
+			});
 		}
 	}
 

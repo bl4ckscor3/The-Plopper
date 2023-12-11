@@ -23,6 +23,8 @@ import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -57,8 +59,13 @@ public class ThePlopper {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.CONFIG_SPEC);
 		NeoForge.EVENT_BUS.addListener(this::onItemExpire);
 
-		if (!FMLEnvironment.production)
-			NeoForge.EVENT_BUS.addListener(this::onItemToss);
+		if (!FMLEnvironment.production) //for testing purposes
+			NeoForge.EVENT_BUS.addListener((ItemTossEvent event) -> checkForPloppers(event.getEntity()));
+	}
+
+	@SubscribeEvent
+	public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PLOPPER_BLOCK_ENTITY_TYPE.get(), PlopperBlockEntity::getCapability);
 	}
 
 	@SubscribeEvent
@@ -87,12 +94,5 @@ public class ThePlopper {
 			if (plopper.suckUp(ei, ei.getItem()))
 				return;
 		}
-	}
-
-	/**
-	 * For testing purposes
-	 */
-	public void onItemToss(ItemTossEvent event) {
-		checkForPloppers(event.getEntity());
 	}
 }

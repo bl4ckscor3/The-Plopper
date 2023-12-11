@@ -2,6 +2,8 @@ package bl4ckscor3.mod.theplopper.block;
 
 import java.util.List;
 
+import com.mojang.serialization.MapCodec;
+
 import bl4ckscor3.mod.theplopper.ThePlopper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -125,5 +127,10 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		return createTickerHelper(type, ThePlopper.PLOPPER_BLOCK_ENTITY_TYPE.get(), PlopperBlockEntity::tick);
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return null;
 	}
 }
