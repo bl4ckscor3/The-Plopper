@@ -13,14 +13,14 @@ issueTrackerURL="https://github.com/bl4ckscor3/The-Plopper/issues"
 
 [[dependencies.theplopper]]
     modId="neoforge"
-    mandatory=true
-    versionRange="[20.3,)"
+    type="required"
+    versionRange="[20.4.70-beta,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.theplopper]]
     modId="minecraft"
-    mandatory=true
-    versionRange="[1.20.3,1.21)"
+    type="required"
+    versionRange="[1.20.4,1.21)"
     ordering="NONE"
     side="BOTH"

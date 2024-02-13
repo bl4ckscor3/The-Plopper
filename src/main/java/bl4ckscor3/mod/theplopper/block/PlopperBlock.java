@@ -39,7 +39,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -63,7 +62,7 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 			MenuProvider containerProvider = getMenuProvider(state, level, pos);
 
 			if (containerProvider != null)
-				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, pos);
+				((ServerPlayer) player).openMenu(containerProvider, pos);
 		}
 
 		return InteractionResult.SUCCESS;
