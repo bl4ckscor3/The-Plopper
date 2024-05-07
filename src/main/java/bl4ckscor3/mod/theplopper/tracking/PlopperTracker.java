@@ -20,6 +20,8 @@ import net.minecraft.world.phys.AABB;
 public class PlopperTracker {
 	private static final Map<ResourceKey<Level>, Collection<BlockPos>> TRACKED_PLOPPERS = new HashMap<>();
 
+	private PlopperTracker() {}
+
 	/**
 	 * Starts tracking a plopper
 	 *

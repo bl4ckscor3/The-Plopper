@@ -9,6 +9,8 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 @EventBusSubscriber(bus = Bus.MOD, modid = ThePlopper.MOD_ID, value = Dist.CLIENT)
 public class ClientReg {
+	private ClientReg() {}
+
 	@SubscribeEvent
 	public static void onFMLClientSetup(RegisterMenuScreensEvent event) {
 		event.register(ThePlopper.PLOPPER_MENU_TYPE.get(), PlopperScreen::new);

@@ -57,15 +57,13 @@ public class PlopperMenu extends AbstractContainerMenu {
 		ItemStack copy = ItemStack.EMPTY;
 		Slot slot = slots.get(index);
 
-		if (slot != null && slot.hasItem()) {
+		if (slot.hasItem()) {
 			ItemStack slotStack = slot.getItem();
 
 			copy = slotStack.copy();
 
-			if (index != 43 && getItems().get(index).is(ThePlopper.RANGE_UPGRADE.get())) { //try to merge upgrades first
-				if (!moveItemStackTo(slotStack, 43, 44, false))
-					return ItemStack.EMPTY;
-			}
+			if (index != 43 && getItems().get(index).is(ThePlopper.RANGE_UPGRADE.get()) && !moveItemStackTo(slotStack, 43, 44, false)) //try to merge upgrades first
+				return ItemStack.EMPTY;
 
 			if (index >= 36 && index <= 43) { //plopper slots
 				if (!moveItemStackTo(slotStack, 0, 36, false))
@@ -75,10 +73,8 @@ public class PlopperMenu extends AbstractContainerMenu {
 				if (!moveItemStackTo(slotStack, 0, 27, false))
 					return ItemStack.EMPTY;
 			}
-			else if (index <= 26) { //main inventory
-				if (!moveItemStackTo(slotStack, 27, 36, false))
-					return ItemStack.EMPTY;
-			}
+			else if (index <= 26 && !moveItemStackTo(slotStack, 27, 36, false)) //main inventory
+				return ItemStack.EMPTY;
 
 			if (slotStack.isEmpty())
 				slot.set(ItemStack.EMPTY);

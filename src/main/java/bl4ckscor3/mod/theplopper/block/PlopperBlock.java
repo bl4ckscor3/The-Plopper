@@ -75,11 +75,9 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 
 	@Override
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			if (level.getBlockEntity(pos) instanceof PlopperBlockEntity be) {
-				Containers.dropContents(level, pos, be.getInventory());
-				Containers.dropContents(level, pos, be.getUpgrade());
-			}
+		if (state.getBlock() != newState.getBlock() && level.getBlockEntity(pos) instanceof PlopperBlockEntity be) {
+			Containers.dropContents(level, pos, be.getInventory());
+			Containers.dropContents(level, pos, be.getUpgrade());
 		}
 
 		super.onRemove(state, level, pos, newState, isMoving);
