@@ -5,6 +5,7 @@ import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.tracking.PlopperTracker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -103,8 +104,8 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
-		return saveWithoutMetadata();
+	public CompoundTag getUpdateTag(HolderLookup.Provider lookupProvider) {
+		return saveCustomOnly(lookupProvider);
 	}
 
 	@Override
@@ -113,29 +114,44 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
 		CompoundTag invTag = tag.getCompound("PlopperInventory");
 
-		for (int i = 0; i < inventory.size(); i++) {
-			if (invTag != null && invTag.contains("Slot" + i))
-				inventory.set(i, ItemStack.of((CompoundTag) invTag.get("Slot" + i)));
+		if (invTag != null) {
+			for (int i = 0; i < inventory.size(); i++) {
+				CompoundTag stackTag = invTag.getCompound("Slot" + i);
+
+				if (stackTag.getInt("count") > 0)
+					inventory.set(i, ItemStack.parse(lookupProvider, stackTag).orElse(ItemStack.EMPTY));
+			}
+
+			CompoundTag upgradeTag = invTag.getCompound("Slot7");
+
+			if (upgradeTag.getInt("count") > 0)
+				upgrade.set(0, ItemStack.parse(lookupProvider, upgradeTag).orElse(ItemStack.EMPTY));
 		}
 
-		upgrade.set(0, ItemStack.of(invTag.getCompound("Slot7")));
-		super.load(tag);
+		super.loadAdditional(tag, lookupProvider);
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag tag) {
+	public void saveAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
 		CompoundTag invTag = new CompoundTag();
 
 		for (int i = 0; i < inventory.size(); i++) {
-			invTag.put("Slot" + i, inventory.get(i).save(new CompoundTag()));
+			ItemStack stack = inventory.get(i);
+
+			if (!stack.isEmpty())
+				invTag.put("Slot" + i, stack.save(lookupProvider, new CompoundTag()));
 		}
 
-		invTag.put("Slot7", upgrade.get(0).save(new CompoundTag()));
+		ItemStack upgradeStack = upgrade.get(0);
+
+		if (!upgradeStack.isEmpty())
+			invTag.put("Slot7", upgradeStack.save(lookupProvider, new CompoundTag()));
+
 		tag.put("PlopperInventory", invTag);
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, lookupProvider);
 	}
 
 	public static IItemHandler getCapability(PlopperBlockEntity be, Direction side) {

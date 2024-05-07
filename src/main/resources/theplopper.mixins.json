@@ -1,0 +1,10 @@
+{
+	"required": true,
+	"package": "bl4ckscor3.mod.theplopper.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"refmap": "theplopper.refmap.json",
+	"mixins": [
+		"V1460Mixin"
+	],
+	"minVersion": "0.8"
+}
