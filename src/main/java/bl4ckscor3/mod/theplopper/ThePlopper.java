@@ -34,14 +34,14 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-@Mod(ThePlopper.MOD_ID)
+@Mod(ThePlopper.MODID)
 @EventBusSubscriber(bus = Bus.MOD)
 public class ThePlopper {
-	public static final String MOD_ID = "theplopper";
-	public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
-	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
-	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MOD_ID);
-	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(Registries.MENU, MOD_ID);
+	public static final String MODID = "theplopper";
+	public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
+	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
+	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(Registries.MENU, MODID);
 	public static final DeferredBlock<PlopperBlock> THE_PLOPPER = BLOCKS.register("plopper", () -> new PlopperBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F, 8.0F).sound(SoundType.METAL).isRedstoneConductor((state, world, pos) -> false).requiresCorrectToolForDrops()));
 	public static final DeferredItem<BlockItem> THE_PLOPPER_ITEM = ITEMS.registerSimpleBlockItem("plopper", THE_PLOPPER);
 	public static final DeferredItem<Item> RANGE_UPGRADE = ITEMS.registerSimpleItem("range_upgrade", new Item.Properties().stacksTo(7));

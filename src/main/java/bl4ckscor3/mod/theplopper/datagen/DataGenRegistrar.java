@@ -23,7 +23,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-@EventBusSubscriber(modid = ThePlopper.MOD_ID, bus = Bus.MOD)
+@EventBusSubscriber(modid = ThePlopper.MODID, bus = Bus.MOD)
 public class DataGenRegistrar {
 	private DataGenRegistrar() {}
 

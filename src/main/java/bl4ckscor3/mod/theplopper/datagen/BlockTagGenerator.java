@@ -11,7 +11,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class BlockTagGenerator extends BlockTagsProvider {
 	public BlockTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
-		super(output, lookupProvider, ThePlopper.MOD_ID, existingFileHelper);
+		super(output, lookupProvider, ThePlopper.MODID, existingFileHelper);
 	}
 
 	@Override

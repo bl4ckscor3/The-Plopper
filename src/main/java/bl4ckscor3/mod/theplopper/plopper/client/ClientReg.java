@@ -7,7 +7,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-@EventBusSubscriber(bus = Bus.MOD, modid = ThePlopper.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(bus = Bus.MOD, modid = ThePlopper.MODID, value = Dist.CLIENT)
 public class ClientReg {
 	private ClientReg() {}
 

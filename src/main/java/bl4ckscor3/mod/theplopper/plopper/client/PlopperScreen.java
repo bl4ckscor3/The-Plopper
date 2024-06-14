@@ -1,5 +1,6 @@
 package bl4ckscor3.mod.theplopper.plopper.client;
 
+import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.block.PlopperMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -8,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class PlopperScreen extends AbstractContainerScreen<PlopperMenu> {
-	private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("theplopper:textures/gui/container/plopper.png");
+	private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(ThePlopper.MODID, "textures/gui/container/plopper.png");
 
 	public PlopperScreen(PlopperMenu container, Inventory playerInv, Component name) {
 		super(container, playerInv, name);
