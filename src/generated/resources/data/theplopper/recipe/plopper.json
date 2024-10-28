@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:hopper"
-    },
-    {
-      "item": "minecraft:repeater"
-    },
-    {
-      "item": "minecraft:ender_eye"
-    }
+    "minecraft:hopper",
+    "minecraft:repeater",
+    "minecraft:ender_eye"
   ],
   "result": {
     "count": 1,

@@ -3,6 +3,7 @@
 /.project
 /.settings
 /run
+/runs
 /logs
 *.launch
 .classpath

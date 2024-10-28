@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:dusts/redstone"
-    },
-    {
-      "item": "minecraft:repeater"
-    },
-    {
-      "item": "minecraft:ender_eye"
-    },
-    {
-      "item": "minecraft:paper"
-    }
+    "#c:dusts/redstone",
+    "minecraft:repeater",
+    "minecraft:ender_eye",
+    "minecraft:paper"
   ],
   "result": {
     "count": 1,
