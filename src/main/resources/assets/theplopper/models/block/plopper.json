@@ -1,4 +1,5 @@
 {
+	"parent": "block/block",
 	"textures": {
 		"0": "theplopper:block/plopper_base",
 		"1": "theplopper:block/plopper_base_bottom",
