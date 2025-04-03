@@ -1,23 +1,14 @@
 package bl4ckscor3.mod.theplopper.block;
 
-import java.util.List;
-
 import com.mojang.serialization.MapCodec;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item.TooltipContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -43,7 +34,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	private static final Style GRAY_STYLE = Style.EMPTY.applyFormat(ChatFormatting.GRAY);
 	private static final VoxelShape SHAPE = Shapes.or(Shapes.or(Shapes.or(Shapes.or(Block.box(2, 0, 2, 14, 1, 14), Block.box(7, 1, 7, 9, 2, 9)), Block.box(6, 2, 6, 10, 3, 10)), Block.box(5, 3, 5, 11, 4, 11)), Block.box(4, 4, 4, 12, 5, 12));
 
 	public PlopperBlock(Properties properties) {
@@ -72,21 +62,6 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 	@Override
 	public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
 		return level.getBlockEntity(pos) instanceof PlopperBlockEntity be ? be : null;
-	}
-
-	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock() && level.getBlockEntity(pos) instanceof PlopperBlockEntity be) {
-			Containers.dropContents(level, pos, be.getInventory());
-			Containers.dropContents(level, pos, be.getUpgrade());
-		}
-
-		super.onRemove(state, level, pos, newState, isMoving);
-	}
-
-	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flag) {
-		tooltip.add(Component.translatable("theplopper:plopper.tooltip").setStyle(GRAY_STYLE));
 	}
 
 	@Override

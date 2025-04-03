@@ -2,12 +2,12 @@ package bl4ckscor3.mod.theplopper;
 
 import bl4ckscor3.mod.theplopper.block.PlopperBlock;
 import bl4ckscor3.mod.theplopper.block.PlopperBlockEntity;
+import bl4ckscor3.mod.theplopper.block.PlopperItem;
 import bl4ckscor3.mod.theplopper.block.PlopperMenu;
 import bl4ckscor3.mod.theplopper.tracking.PlopperTracker;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.SoundType;
@@ -43,7 +43,7 @@ public class ThePlopper {
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
 	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(Registries.MENU, MODID);
 	public static final DeferredBlock<PlopperBlock> THE_PLOPPER = BLOCKS.registerBlock("plopper", PlopperBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F, 8.0F).sound(SoundType.METAL).isRedstoneConductor((state, world, pos) -> false).requiresCorrectToolForDrops());
-	public static final DeferredItem<BlockItem> THE_PLOPPER_ITEM = ITEMS.registerSimpleBlockItem("plopper", THE_PLOPPER);
+	public static final DeferredItem<PlopperItem> THE_PLOPPER_ITEM = ITEMS.registerItem("plopper", p -> new PlopperItem(THE_PLOPPER.get(), p.useBlockDescriptionPrefix()));
 	public static final DeferredItem<Item> RANGE_UPGRADE = ITEMS.registerSimpleItem("range_upgrade", new Item.Properties().stacksTo(7));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlopperBlockEntity>> PLOPPER_BLOCK_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register("plopper", () -> new BlockEntityType<>(PlopperBlockEntity::new, THE_PLOPPER.get()));
 	public static final DeferredHolder<MenuType<?>, MenuType<PlopperMenu>> PLOPPER_MENU_TYPE = MENU_TYPES.register("plopper", () -> IMenuTypeExtension.create((windowId, playerInv, data) -> new PlopperMenu(windowId, playerInv, playerInv.player.level().getBlockEntity(data.readBlockPos()))));

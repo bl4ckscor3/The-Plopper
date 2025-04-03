@@ -14,6 +14,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -96,6 +97,13 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	}
 
 	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		Containers.dropContents(level, pos, getInventory());
+		Containers.dropContents(level, pos, getUpgrade());
+		super.preRemoveSideEffects(pos, state);
+	}
+
+	@Override
 	public void setRemoved() {
 		super.setRemoved();
 
@@ -115,21 +123,19 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 
 	@Override
 	public void loadAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-		CompoundTag invTag = tag.getCompound("PlopperInventory");
+		CompoundTag invTag = tag.getCompoundOrEmpty("PlopperInventory");
 
-		if (invTag != null) {
-			for (int i = 0; i < inventory.size(); i++) {
-				CompoundTag stackTag = invTag.getCompound("Slot" + i);
+		for (int i = 0; i < inventory.size(); i++) {
+			CompoundTag stackTag = invTag.getCompoundOrEmpty("Slot" + i);
 
-				if (stackTag.getInt("count") > 0)
-					inventory.set(i, ItemStack.parse(lookupProvider, stackTag).orElse(ItemStack.EMPTY));
-			}
-
-			CompoundTag upgradeTag = invTag.getCompound("Slot7");
-
-			if (upgradeTag.getInt("count") > 0)
-				upgrade.set(0, ItemStack.parse(lookupProvider, upgradeTag).orElse(ItemStack.EMPTY));
+			if (stackTag.getIntOr("count", 0) > 0)
+				inventory.set(i, ItemStack.parse(lookupProvider, stackTag).orElse(ItemStack.EMPTY));
 		}
+
+		CompoundTag upgradeTag = invTag.getCompoundOrEmpty("Slot7");
+
+		if (upgradeTag.getIntOr("count", 0) > 0)
+			upgrade.set(0, ItemStack.parse(lookupProvider, upgradeTag).orElse(ItemStack.EMPTY));
 
 		super.loadAdditional(tag, lookupProvider);
 	}
