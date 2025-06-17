@@ -24,6 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -41,7 +43,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	}
 
 	/**
-	 * Adds the given {@link net.minecraft.item.ItemStack} to the inventory
+	 * Adds the given {@link net.minecraft.world.item.ItemStack} to the inventory
 	 *
 	 * @param ie The ItemEntity that gets sucked up
 	 * @param stack The stack to add
@@ -67,11 +69,11 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 		}
 
 		if (!remainder.isEmpty()) {
-			ItemEntity newIe = new ItemEntity(ie.getCommandSenderWorld(), ie.getX(), ie.getY(), ie.getZ(), remainder);
+			ItemEntity newIe = new ItemEntity(ie.level(), ie.getX(), ie.getY(), ie.getZ(), remainder);
 
 			ie.discard();
 			newIe.setDeltaMovement(0.0D, 0.0D, 0.0D);
-			newIe.getCommandSenderWorld().addFreshEntity(newIe);
+			newIe.level().addFreshEntity(newIe);
 		}
 		else
 			ie.discard();
@@ -82,7 +84,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 		}
 
 		if (Configuration.CONFIG.playSound.get())
-			ie.getCommandSenderWorld().playSound(null, ie.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.NEUTRAL, 1.0F, 1.0F);
+			ie.level().playSound(null, ie.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.NEUTRAL, 1.0F, 1.0F);
 
 		level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
 		setChanged();
@@ -122,42 +124,37 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	}
 
 	@Override
-	public void loadAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-		CompoundTag invTag = tag.getCompoundOrEmpty("PlopperInventory");
+	public void loadAdditional(ValueInput tag) {
+		ValueInput invTag = tag.child("PlopperInventory").orElse(null);
 
-		for (int i = 0; i < inventory.size(); i++) {
-			CompoundTag stackTag = invTag.getCompoundOrEmpty("Slot" + i);
+		if (invTag != null) {
+			for (int i = 0; i < inventory.size(); i++) {
+				inventory.set(i, invTag.read("Slot" + i, ItemStack.CODEC).orElse(ItemStack.EMPTY));
+			}
 
-			if (stackTag.getIntOr("count", 0) > 0)
-				inventory.set(i, ItemStack.parse(lookupProvider, stackTag).orElse(ItemStack.EMPTY));
+			upgrade.set(0, invTag.read("Slot7", ItemStack.CODEC).orElse(ItemStack.EMPTY));
 		}
 
-		CompoundTag upgradeTag = invTag.getCompoundOrEmpty("Slot7");
-
-		if (upgradeTag.getIntOr("count", 0) > 0)
-			upgrade.set(0, ItemStack.parse(lookupProvider, upgradeTag).orElse(ItemStack.EMPTY));
-
-		super.loadAdditional(tag, lookupProvider);
+		super.loadAdditional(tag);
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-		CompoundTag invTag = new CompoundTag();
+	public void saveAdditional(ValueOutput tag) {
+		ValueOutput invTag = tag.child("PlopperInventory");
 
 		for (int i = 0; i < inventory.size(); i++) {
 			ItemStack stack = inventory.get(i);
 
 			if (!stack.isEmpty())
-				invTag.put("Slot" + i, stack.save(lookupProvider, new CompoundTag()));
+				invTag.store("Slot" + i, ItemStack.CODEC, stack);
 		}
 
 		ItemStack upgradeStack = upgrade.get(0);
 
 		if (!upgradeStack.isEmpty())
-			invTag.put("Slot7", upgradeStack.save(lookupProvider, new CompoundTag()));
+			invTag.store("Slot7", ItemStack.CODEC, upgradeStack);
 
-		tag.put("PlopperInventory", invTag);
-		super.saveAdditional(tag, lookupProvider);
+		super.saveAdditional(tag);
 	}
 
 	public static IItemHandler getCapability(PlopperBlockEntity be, Direction side) {

@@ -83,10 +83,10 @@ public class ThePlopper {
 	 * @param ei The item to potentially suck up
 	 */
 	private static void checkForPloppers(ItemEntity ei) {
-		if (ei.getCommandSenderWorld().isClientSide)
+		if (ei.level().isClientSide)
 			return;
 
-		for (PlopperBlockEntity plopper : PlopperTracker.getPloppersInRange(ei.getCommandSenderWorld(), ei.blockPosition())) {
+		for (PlopperBlockEntity plopper : PlopperTracker.getPloppersInRange(ei.level(), ei.blockPosition())) {
 			//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
 			if (plopper.suckUp(ei, ei.getItem()))
 				return;
