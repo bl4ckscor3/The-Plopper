@@ -15,7 +15,7 @@ issueTrackerURL="https://github.com/bl4ckscor3/The-Plopper/issues"
 [[dependencies.theplopper]]
     modId="neoforge"
     type="required"
-    versionRange="[21,)"
+    versionRange="[21.6.6-beta,)"
     ordering="NONE"
     side="BOTH"
 
