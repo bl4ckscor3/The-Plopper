@@ -1,5 +1,11 @@
 {
     "block.theplopper.plopper": "Der Plopper",
     "item.theplopper.range_upgrade": "Reichweiten-Upgrade",
+    "theplopper.configuration.bypassOutputSide": "Ausgabeseite ignorieren",
+    "theplopper.configuration.bypassOutputSide.tooltip": "Falls aktiviert, können andere Blöcke aus jeder Seite des Ploppers Items entfernen, anstatt nur der unteren Seite.",
+    "theplopper.configuration.displayParticles": "Partikel anzeigen",
+    "theplopper.configuration.displayParticles.tooltip": "Ob Partikel angezeit werden sollen, wenn der Plopper ein Item aufnimmt.",
+    "theplopper.configuration.playSound": "Geräusch abspielen",
+    "theplopper.configuration.playSound.tooltip": "Ob ein Geräusch abgespielt werden soll, wen der Plopper ein Item aufnimmt.",
     "theplopper:plopper.tooltip": "Sammelt in seiner Umgebung auf dem Boden liegende Items, die kurz vorm Despawnen sind, auf."
 }
