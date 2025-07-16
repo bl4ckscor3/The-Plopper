@@ -1,5 +1,11 @@
 {
     "block.theplopper.plopper": "The Plopper",
     "item.theplopper.range_upgrade": "Range Upgrade",
+    "theplopper.configuration.bypassOutputSide": "Bypass output side",
+    "theplopper.configuration.bypassOutputSide.tooltip": "If set to true, the plopper will output items to e.g. pipes at all sides instead of just the bottom.",
+    "theplopper.configuration.displayParticles": "Display particles",
+    "theplopper.configuration.displayParticles.tooltip": "Whether particles should show up every time the plopper picks up an item.",
+    "theplopper.configuration.playSound": "Play sound",
+    "theplopper.configuration.playSound.tooltip": "Whether a sound should be played when an item gets picked up by the plopper.",
     "theplopper:plopper.tooltip": "Picks up any items lying on the ground that are about to despawn in its general vicinity."
 }
