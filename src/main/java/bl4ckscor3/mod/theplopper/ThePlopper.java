@@ -55,13 +55,13 @@ public class ThePlopper {
 		modContainer.registerConfig(ModConfig.Type.COMMON, Configuration.CONFIG_SPEC);
 		NeoForge.EVENT_BUS.addListener(this::onItemExpire);
 
-		if (!FMLEnvironment.production) //for testing purposes
+		if (!FMLEnvironment.isProduction()) //for testing purposes
 			NeoForge.EVENT_BUS.addListener((ItemTossEvent event) -> checkForPloppers(event.getEntity()));
 	}
 
 	@SubscribeEvent
 	public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PLOPPER_BLOCK_ENTITY_TYPE.get(), PlopperBlockEntity::getCapability);
+		event.registerBlockEntity(Capabilities.Item.BLOCK, PLOPPER_BLOCK_ENTITY_TYPE.get(), PlopperBlockEntity::getCapability);
 	}
 
 	@SubscribeEvent
@@ -82,12 +82,12 @@ public class ThePlopper {
 	 * @param ei The item to potentially suck up
 	 */
 	private static void checkForPloppers(ItemEntity ei) {
-		if (ei.level().isClientSide)
+		if (ei.level().isClientSide())
 			return;
 
 		for (PlopperBlockEntity plopper : PlopperTracker.getPloppersInRange(ei.level(), ei.blockPosition())) {
 			//if there are multiple ploppers that could potentially pick up the item, this one will take as much as it can and let the rest be handled by others
-			if (plopper.suckUp(ei, ei.getItem()))
+			if (plopper.suckUp(ei))
 				return;
 		}
 	}

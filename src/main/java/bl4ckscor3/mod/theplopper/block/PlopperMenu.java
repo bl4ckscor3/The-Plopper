@@ -8,7 +8,6 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.SlotItemHandler;
 
 public class PlopperMenu extends AbstractContainerMenu {
 	private final ContainerLevelAccess access;
@@ -32,8 +31,8 @@ public class PlopperMenu extends AbstractContainerMenu {
 
 		if (blockEntity instanceof PlopperBlockEntity be) {
 			//plopper inventory
-			for (int i = 0; i < 7; i++) {
-				addSlot(new SlotItemHandler(be.getInventoryHandler(), i, 26 + i * 18, 20) {
+			for (int i = 0; i < PlopperBlockEntity.STORAGE_SIZE; i++) {
+				addSlot(new Slot(be, i, 26 + i * 18, 20) {
 					@Override
 					public boolean mayPlace(ItemStack stack) {
 						return false;
@@ -42,7 +41,7 @@ public class PlopperMenu extends AbstractContainerMenu {
 			}
 
 			//upgrade slot
-			addSlot(new SlotItemHandler(be.getUpgradeHandler(), 0, 177, 7) {
+			addSlot(new Slot(be, PlopperBlockEntity.UPGRADE_SLOT, 177, 7) {
 				@Override
 				public void setChanged() {
 					blockEntity.setChanged();

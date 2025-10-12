@@ -15,27 +15,27 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
-public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
-	public static final int SLOTS = 7;
-	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(7, ItemStack.EMPTY);
-	private NonNullList<ItemStack> upgrade = NonNullList.<ItemStack>withSize(1, ItemStack.EMPTY);
-	private IItemHandler inventoryHandler;
-	private IItemHandler upgradeHandler;
+public class PlopperBlockEntity extends BaseContainerBlockEntity {
+	public static final int STORAGE_SIZE = 7;
+	public static final int UPGRADE_SLOT = STORAGE_SIZE;
+	public static final int STORAGE_SIZE_WITH_UPGRADE = STORAGE_SIZE + 1;
+	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(STORAGE_SIZE_WITH_UPGRADE, ItemStack.EMPTY);
 	private boolean tracked = false;
 
 	public PlopperBlockEntity(BlockPos pos, BlockState state) {
@@ -46,48 +46,47 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	 * Adds the given {@link net.minecraft.world.item.ItemStack} to the inventory
 	 *
 	 * @param ie The ItemEntity that gets sucked up
-	 * @param stack The stack to add
 	 * @return true if (part of) the stack has been sucked up, false if the stack couldn't be sucked up
 	 */
-	public boolean suckUp(ItemEntity ie, ItemStack stack) {
-		ItemStack remainder = stack;
-		IItemHandler itemHandler = getInventoryHandler();
+	public boolean suckUp(ItemEntity ie) {
+		ItemStack stack = ie.getItem().copy();
+		int toInsert = stack.getCount();
+		ResourceHandler<ItemResource> itemHandler = VanillaContainerWrapper.of(this);
 
-		if (itemHandler == null)
-			return false;
+		try (Transaction transaction = Transaction.openRoot()) {
+			int inserted = ResourceHandlerUtil.insertStacking(itemHandler, ItemResource.of(stack), toInsert, transaction);
+			BlockState state = getBlockState();
 
-		for (int i = 0; i < inventory.size(); i++) {
-			remainder = itemHandler.insertItem(i, remainder, false);
+			if (inserted == 0) {
+				level.sendBlockUpdated(worldPosition, state, state, 2);
+				return false;
+			}
 
-			if (remainder.isEmpty())
-				break;
+			if (inserted != toInsert) {
+				stack.shrink(inserted);
+
+				ItemEntity newIe = new ItemEntity(ie.level(), ie.getX(), ie.getY(), ie.getZ(), stack);
+
+				ie.discard();
+				newIe.setDeltaMovement(0.0D, 0.0D, 0.0D);
+				newIe.level().addFreshEntity(newIe);
+			}
+			else
+				ie.discard();
+
+			if (!level.isClientSide() && Configuration.CONFIG.displayParticles.get()) {
+				((ServerLevel) level).sendParticles(ParticleTypes.SMOKE, ie.getX(), ie.getY() + 0.25D, ie.getZ(), 10, 0.0D, 0.1D, 0.0D, 0.001D);
+				((ServerLevel) level).sendParticles(ParticleTypes.ENCHANT, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 1.5D, getBlockPos().getZ() + 0.5D, 20, 0.0D, 0.0D, 0.0D, 0.3D);
+			}
+
+			if (Configuration.CONFIG.playSound.get())
+				ie.level().playSound(null, ie.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.NEUTRAL, 1.0F, 1.0F);
+
+			level.sendBlockUpdated(worldPosition, state, state, 2);
+			setChanged();
+			transaction.commit();
 		}
 
-		if (remainder.equals(stack)) {
-			level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
-			return false;
-		}
-
-		if (!remainder.isEmpty()) {
-			ItemEntity newIe = new ItemEntity(ie.level(), ie.getX(), ie.getY(), ie.getZ(), remainder);
-
-			ie.discard();
-			newIe.setDeltaMovement(0.0D, 0.0D, 0.0D);
-			newIe.level().addFreshEntity(newIe);
-		}
-		else
-			ie.discard();
-
-		if (!level.isClientSide && Configuration.CONFIG.displayParticles.get()) {
-			((ServerLevel) level).sendParticles(ParticleTypes.SMOKE, ie.getX(), ie.getY() + 0.25D, ie.getZ(), 10, 0.0D, 0.1D, 0.0D, 0.001D);
-			((ServerLevel) level).sendParticles(ParticleTypes.ENCHANT, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 1.5D, getBlockPos().getZ() + 0.5D, 20, 0.0D, 0.0D, 0.0D, 0.3D);
-		}
-
-		if (Configuration.CONFIG.playSound.get())
-			ie.level().playSound(null, ie.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.NEUTRAL, 1.0F, 1.0F);
-
-		level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
-		setChanged();
 		return true;
 	}
 
@@ -100,8 +99,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 
 	@Override
 	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-		Containers.dropContents(level, pos, getInventory());
-		Containers.dropContents(level, pos, getUpgrade());
+		Containers.dropContents(level, pos, getItems());
 		super.preRemoveSideEffects(pos, state);
 	}
 
@@ -131,8 +129,6 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 			for (int i = 0; i < inventory.size(); i++) {
 				inventory.set(i, invTag.read("Slot" + i, ItemStack.CODEC).orElse(ItemStack.EMPTY));
 			}
-
-			upgrade.set(0, invTag.read("Slot7", ItemStack.CODEC).orElse(ItemStack.EMPTY));
 		}
 
 		super.loadAdditional(tag);
@@ -149,17 +145,12 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 				invTag.store("Slot" + i, ItemStack.CODEC, stack);
 		}
 
-		ItemStack upgradeStack = upgrade.get(0);
-
-		if (!upgradeStack.isEmpty())
-			invTag.store("Slot7", ItemStack.CODEC, upgradeStack);
-
 		super.saveAdditional(tag);
 	}
 
-	public static IItemHandler getCapability(PlopperBlockEntity be, Direction side) {
+	public static ResourceHandler<ItemResource> getCapability(PlopperBlockEntity be, Direction side) {
 		if (side == Direction.DOWN || Configuration.CONFIG.bypassOutputSide.get())
-			return new ExtractOnlyItemStackHandler(be.inventory);
+			return new ExtractOnlyResourceHandler(be.inventory);
 
 		return null;
 	}
@@ -168,7 +159,7 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	 * @return The range this plopper will pick up items in
 	 */
 	public AABB getRange() {
-		int range = 2 + upgrade.get(0).getCount() * 2;
+		int range = 2 + getUpgrade().getCount() * 2;
 		int x = getBlockPos().getX();
 		int y = getBlockPos().getY();
 		int z = getBlockPos().getZ();
@@ -176,40 +167,36 @@ public class PlopperBlockEntity extends BlockEntity implements MenuProvider {
 	}
 
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, Inventory playerInv, Player player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory playerInv) {
 		return new PlopperMenu(windowId, playerInv, this);
 	}
 
 	@Override
-	public Component getDisplayName() {
+	public Component getDefaultName() {
 		return Component.translatable(ThePlopper.THE_PLOPPER.get().getDescriptionId());
 	}
 
-	public NonNullList<ItemStack> getInventory() {
+	@Override
+	protected void setItems(NonNullList<ItemStack> stacks) {
+		inventory = stacks;
+	}
+
+	@Override
+	public NonNullList<ItemStack> getItems() {
 		return inventory;
 	}
 
-	public NonNullList<ItemStack> getUpgrade() {
-		return upgrade;
+	@Override
+	public int getContainerSize() {
+		return STORAGE_SIZE_WITH_UPGRADE;
 	}
 
-	public IItemHandler getInventoryHandler() {
-		if (inventoryHandler == null)
-			inventoryHandler = new ItemStackHandler(inventory);
-
-		return inventoryHandler;
+	@Override
+	public boolean canPlaceItem(int slot, ItemStack stack) {
+		return slot != UPGRADE_SLOT || stack.is(ThePlopper.THE_PLOPPER_ITEM) && getItem(slot).getCount() + stack.getCount() <= 7;
 	}
 
-	public IItemHandler getUpgradeHandler() {
-		if (upgradeHandler == null) {
-			upgradeHandler = new ItemStackHandler(upgrade) {
-				@Override
-				public int getSlotLimit(int slot) {
-					return 7;
-				}
-			};
-		}
-
-		return upgradeHandler;
+	public ItemStack getUpgrade() {
+		return inventory.get(UPGRADE_SLOT);
 	}
 }

@@ -49,7 +49,7 @@ public class PlopperBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 
 	@Override
 	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			MenuProvider containerProvider = getMenuProvider(state, level, pos);
 
 			if (containerProvider != null)
