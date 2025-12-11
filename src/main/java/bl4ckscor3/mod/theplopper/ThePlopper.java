@@ -41,9 +41,9 @@ public class ThePlopper {
 	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
 	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(Registries.MENU, MODID);
-	public static final DeferredBlock<PlopperBlock> THE_PLOPPER = BLOCKS.registerBlock("plopper", PlopperBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F, 8.0F).sound(SoundType.METAL).isRedstoneConductor((state, world, pos) -> false).requiresCorrectToolForDrops());
+	public static final DeferredBlock<PlopperBlock> THE_PLOPPER = BLOCKS.registerBlock("plopper", PlopperBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F, 8.0F).sound(SoundType.METAL).isRedstoneConductor((state, world, pos) -> false).requiresCorrectToolForDrops());
 	public static final DeferredItem<PlopperItem> THE_PLOPPER_ITEM = ITEMS.registerItem("plopper", p -> new PlopperItem(THE_PLOPPER.get(), p.useBlockDescriptionPrefix()));
-	public static final DeferredItem<Item> RANGE_UPGRADE = ITEMS.registerSimpleItem("range_upgrade", new Item.Properties().stacksTo(7));
+	public static final DeferredItem<Item> RANGE_UPGRADE = ITEMS.registerSimpleItem("range_upgrade", () -> new Item.Properties().stacksTo(7));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlopperBlockEntity>> PLOPPER_BLOCK_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register("plopper", () -> new BlockEntityType<>(PlopperBlockEntity::new, THE_PLOPPER.get()));
 	public static final DeferredHolder<MenuType<?>, MenuType<PlopperMenu>> PLOPPER_MENU_TYPE = MENU_TYPES.register("plopper", () -> IMenuTypeExtension.create((windowId, playerInv, data) -> new PlopperMenu(windowId, playerInv, playerInv.player.level().getBlockEntity(data.readBlockPos()))));
 

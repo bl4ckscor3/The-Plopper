@@ -6,11 +6,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class PlopperScreen extends AbstractContainerScreen<PlopperMenu> {
-	private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(ThePlopper.MODID, "textures/gui/container/plopper.png");
+	private static final Identifier GUI_TEXTURE = Identifier.fromNamespaceAndPath(ThePlopper.MODID, "textures/gui/container/plopper.png");
 
 	public PlopperScreen(PlopperMenu container, Inventory playerInv, Component name) {
 		super(container, playerInv, name);
