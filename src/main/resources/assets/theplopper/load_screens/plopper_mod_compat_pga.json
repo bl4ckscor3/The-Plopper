@@ -1,10 +1,10 @@
 {
 	"screens" : [
-		
+
 		 {
-			"COMMENT" : "PLOPPER SUPPORT", 
-			"class" : "bl4ckscor3.mod.theplopper.gui.GuiPlopper", 
-			"texture" : "theplopper:textures/gui/container/plopper.png", 
+			"COMMENT" : "PLOPPER SUPPORT",
+			"class" : "bl4ckscor3.mod.theplopper.client.PlopperScreen",
+			"texture" : "theplopper:textures/gui/container/plopper.png",
 			"size" : [200, 133]
 		}]
 }

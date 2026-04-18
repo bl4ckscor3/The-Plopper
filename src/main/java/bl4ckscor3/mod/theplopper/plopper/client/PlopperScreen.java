@@ -2,7 +2,7 @@ package bl4ckscor3.mod.theplopper.plopper.client;
 
 import bl4ckscor3.mod.theplopper.ThePlopper;
 import bl4ckscor3.mod.theplopper.block.PlopperMenu;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -13,21 +13,20 @@ public class PlopperScreen extends AbstractContainerScreen<PlopperMenu> {
 	private static final Identifier GUI_TEXTURE = Identifier.fromNamespaceAndPath(ThePlopper.MODID, "textures/gui/container/plopper.png");
 
 	public PlopperScreen(PlopperMenu container, Inventory playerInv, Component name) {
-		super(container, playerInv, name);
+		super(container, playerInv, name, 200, 133);
 
-		imageWidth = 200;
-		imageHeight = 133;
 		inventoryLabelY = 40; //position "Inventory" correctly
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		renderTooltip(guiGraphics, mouseX, mouseY);
+	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+		extractTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+	public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
 		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, GUI_TEXTURE, (width - imageWidth) / 2, (height - imageHeight) / 2, 0, 0, imageWidth, imageHeight, 256, 256);
 	}
 }
