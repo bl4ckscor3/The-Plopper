@@ -1,0 +1,94 @@
+package bl4ckscor3.mod.theplopper.block;
+
+import bl4ckscor3.mod.theplopper.ThePlopper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+public class PlopperMenu extends AbstractContainerMenu {
+	private final ContainerLevelAccess access;
+
+	public PlopperMenu(int windowId, Inventory playerInv, BlockPos pos) {
+		super(ThePlopper.PLOPPER_MENU_TYPE.get(), windowId);
+
+		BlockEntity blockEntity = playerInv.player.level().getBlockEntity(pos);
+
+		access = ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
+
+		//player inventory
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 9; j++) {
+				addSlot(new Slot(playerInv, 9 + j + i * 9, 8 + j * 18, 51 + i * 18));
+			}
+		}
+
+		//player hotbar
+		for (int i = 0; i < 9; i++) {
+			addSlot(new Slot(playerInv, i, 8 + i * 18, 109));
+		}
+
+		if (blockEntity instanceof PlopperBlockEntity be) {
+			//plopper inventory
+			for (int i = 0; i < PlopperBlockEntity.STORAGE_SIZE; i++) {
+				addSlot(new Slot(be, i, 26 + i * 18, 20) {
+					@Override
+					public boolean mayPlace(ItemStack stack) {
+						return false;
+					}
+				});
+			}
+
+			//upgrade slot
+			addSlot(new Slot(be, PlopperBlockEntity.UPGRADE_SLOT, 177, 7) {
+				@Override
+				public void setChanged() {
+					blockEntity.setChanged();
+				}
+			});
+		}
+	}
+
+	@Override
+	public ItemStack quickMoveStack(Player player, int index) //basically the chest code, but modified a bit to e.g. include custom slots
+	{
+		ItemStack copy = ItemStack.EMPTY;
+		Slot slot = slots.get(index);
+
+		if (slot.hasItem()) {
+			ItemStack slotStack = slot.getItem();
+
+			copy = slotStack.copy();
+
+			if (index != 43 && getItems().get(index).is(ThePlopper.RANGE_UPGRADE.get()) && !moveItemStackTo(slotStack, 43, 44, false)) //try to merge upgrades first
+				return ItemStack.EMPTY;
+
+			if (index >= 36 && index <= 43) { //plopper slots
+				if (!moveItemStackTo(slotStack, 0, 36, false))
+					return ItemStack.EMPTY;
+			}
+			else if (index >= 27 && index <= 35) { //hotbar
+				if (!moveItemStackTo(slotStack, 0, 27, false))
+					return ItemStack.EMPTY;
+			}
+			else if (index <= 26 && !moveItemStackTo(slotStack, 27, 36, false)) //main inventory
+				return ItemStack.EMPTY;
+
+			if (slotStack.isEmpty())
+				slot.set(ItemStack.EMPTY);
+			else
+				slot.setChanged();
+		}
+
+		return copy;
+	}
+
+	@Override
+	public boolean stillValid(Player player) {
+		return stillValid(access, player, ThePlopper.THE_PLOPPER.get());
+	}
+}
