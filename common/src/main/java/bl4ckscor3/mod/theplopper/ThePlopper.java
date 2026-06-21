@@ -8,6 +8,9 @@ import bl4ckscor3.mod.theplopper.block.PlopperBlock;
 import bl4ckscor3.mod.theplopper.block.PlopperBlockEntity;
 import bl4ckscor3.mod.theplopper.block.PlopperItem;
 import bl4ckscor3.mod.theplopper.block.PlopperMenu;
+import bl4ckscor3.mod.theplopper.lib.Platform;
+import bl4ckscor3.mod.theplopper.lib.RegisteredBlock;
+import bl4ckscor3.mod.theplopper.lib.RegisteredItem;
 import bl4ckscor3.mod.theplopper.tracking.PlopperTracker;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -23,9 +26,9 @@ import net.minecraft.world.level.material.MapColor;
 public class ThePlopper {
 	public static final String MODID = "theplopper";
 	private static Platform platform;
-	public static final RegistryObject<PlopperBlock> THE_PLOPPER = RegistryObject.block("plopper", PlopperBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F, 8.0F).sound(SoundType.METAL).isRedstoneConductor((state, world, pos) -> false).requiresCorrectToolForDrops());
-	public static final RegistryObject<PlopperItem> THE_PLOPPER_ITEM = RegistryObject.blockItem("plopper", p -> new PlopperItem(THE_PLOPPER.get(), p), Item.Properties::new);
-	public static final RegistryObject<Item> RANGE_UPGRADE = RegistryObject.item("range_upgrade", Item::new, () -> new Item.Properties().stacksTo(7));
+	public static final RegisteredBlock<PlopperBlock> THE_PLOPPER = RegisteredBlock.create("plopper", PlopperBlock::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F, 8.0F).sound(SoundType.METAL).isRedstoneConductor((state, world, pos) -> false).requiresCorrectToolForDrops());
+	public static final RegisteredItem<PlopperItem> THE_PLOPPER_ITEM = RegisteredItem.blockItem("plopper", p -> new PlopperItem(THE_PLOPPER.get(), p), Item.Properties::new);
+	public static final RegisteredItem<Item> RANGE_UPGRADE = RegisteredItem.item("range_upgrade", Item::new, () -> new Item.Properties().stacksTo(7));
 	public static final Supplier<BlockEntityType<PlopperBlockEntity>> PLOPPER_BLOCK_ENTITY_TYPE = Suppliers.memoize(() -> platform.createBlockEntity(PlopperBlockEntity::new, THE_PLOPPER.get()));
 	public static final Supplier<MenuType<PlopperMenu>> PLOPPER_MENU_TYPE = Suppliers.memoize(() -> platform.createMenuType(PlopperMenu::new));
 

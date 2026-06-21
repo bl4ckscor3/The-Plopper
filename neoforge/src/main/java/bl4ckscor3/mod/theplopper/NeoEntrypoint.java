@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import bl4ckscor3.mod.theplopper.block.ExtractOnlyResourceHandler;
 import bl4ckscor3.mod.theplopper.block.PlopperBlockEntity;
+import bl4ckscor3.mod.theplopper.lib.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
