@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "theplopper:plopper"
+        "recipes": "theplopper:plopper"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
