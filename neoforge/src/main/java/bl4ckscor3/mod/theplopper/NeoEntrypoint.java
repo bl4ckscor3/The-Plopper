@@ -47,7 +47,7 @@ public class NeoEntrypoint implements Platform {
 	public NeoEntrypoint(ModContainer modContainer, IEventBus modBus) {
 		this.modBus = modBus;
 		ThePlopper.initialize(this);
-		modContainer.registerConfig(ModConfig.Type.COMMON, Configuration.CONFIG_SPEC);
+		modContainer.registerConfig(ModConfig.Type.LOCAL, Configuration.CONFIG_SPEC);
 		NeoForge.EVENT_BUS.addListener((ItemExpireEvent event) -> ThePlopper.checkForPloppers(event.getEntity()));
 	}
 
